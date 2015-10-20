@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 
@@ -21,10 +22,13 @@ public class DateAdapter extends BaseAdapter {
     private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
 
 
-    private List<String> mData = new ArrayList<String>();
+    private List<String> title_event = new ArrayList<String>();
+    private List<Event> event_info = new ArrayList<Event>();
+
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
 
     private LayoutInflater mInflater;
+    public int myCliquedPosition;
 
 
     public DateAdapter(Context context) {
@@ -34,16 +38,36 @@ public class DateAdapter extends BaseAdapter {
 
     private void initHeaders() {
         List<String> getDates = getDateRange();
-        GeneralEvent test = new GeneralEvent("Vertica", "Tuesday, Oct 20", "5pm", "Meeting Today", "MAD Project Meeting");
+        List<Event> FakeData = fakeEvent();
         for(String date: getDates) {
-            //We can add conditionals here to check if event date is present, otherwise do not
-            // add a section header
-            Log.d("Date", date);
-            if(date.equals(test.getDate())) {
-                addSectionHeaderItem(date);
-                addItem(test.getTitle());
+            boolean header_added = false;
+            for(Event data:FakeData) {
+                Log.d("Date", date);
+
+                if (date.equals(data.getDate()) && !header_added) {
+                    header_added = true;
+                    addSectionHeaderItem(date);
+                    addItem(data);
+                } else if(date.equals(data.getDate())) {
+                    addItem(data);
+                }
             }
         }
+    }
+
+    private List<Event> fakeEvent() {
+        List<Event> fakeData = new ArrayList<Event>();
+        GeneralEvent test1 = new GeneralEvent("Vertica", "Tuesday, Oct 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
+        GeneralEvent test2 = new GeneralEvent("SSC", "Tuesday, Oct 20", "1:00pm", "\"105B NanoTwitter Project\"", "NanoTwitter");
+        GeneralEvent test3 = new GeneralEvent("Shapiro", "Tuesday, Oct 20", "11:30am", "\"Lunch with Bob\"", "Food");
+        GeneralEvent test4 = new GeneralEvent("Cambridge, MA", "Saturday, Oct 24", "5:00pm", "\"Interview with Company\"", "Interview");
+        GeneralEvent test5 = new GeneralEvent("Home", "Thursday, Oct 29", "6:00pm", "\"Dinner with Fay\"", "Date Night");
+        fakeData.add(test1);
+        fakeData.add(test2);
+        fakeData.add(test3);
+        fakeData.add(test4);
+        fakeData.add(test5);
+        return fakeData;
     }
 
 
@@ -84,20 +108,23 @@ public class DateAdapter extends BaseAdapter {
         return dates;
     }
 
-    public void addItem(final String item) {
-        mData.add(item);
+    public void addItem(final Event event) {
+        title_event.add(event.getTitle());
+        event_info.add(event);
         notifyDataSetChanged();
     }
 
     public void addSectionHeaderItem(final String item) {
-        mData.add(item);
-        sectionHeader.add(mData.size() - 1);
+        title_event.add(item);   //Adds date string
+        event_info.add(null); //For spacing
+        sectionHeader.add(title_event.size() - 1);
         notifyDataSetChanged();
     }
 
 
     @Override
     public int getViewTypeCount() { return TYPE_MAX_COUNT; }
+
     @Override
     public int getItemViewType(int position) {
         return sectionHeader.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM;
@@ -105,13 +132,11 @@ public class DateAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mData.size();
+        return title_event.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return mData.get(position);
-    }
+    public Object getItem(int position) { return title_event.get(position); }
 
     @Override
     public long getItemId(int position) {
@@ -122,29 +147,53 @@ public class DateAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         int rowType = getItemViewType(position);
+        Log.d("number", ""+position);
+        Log.d("inserted", title_event.get(position));
+//        Log.d("inserted", event_info.get(position).getDescription());
 
         if (convertView == null) {
+            Log.d("null", "convertView was null");
             holder = new ViewHolder();
             switch (rowType) {
                 case TYPE_ITEM:
                     convertView = mInflater.inflate(R.layout.events_layout, null);
                     holder.textView = (TextView) convertView.findViewById(R.id.text);
+                    holder.subView = (TextView) convertView.findViewById(R.id.description);
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.seperator_header, null);
                     holder.textView = (TextView) convertView.findViewById(R.id.textSeparator);
+                    holder.subView = null;
                     break;
             }
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(mData.get(position));
+        if(holder.textView != null) {
+            Log.d("null", "textView was Not null");
+
+        }
+        holder.textView.setText(title_event.get(position));
+        if(holder.subView != null) {
+            GeneralEvent activity = (GeneralEvent) event_info.get(position);
+            holder.subView.setText(activity.getSubtitle());
+        }
 
         return convertView;
     }
 
     public static class ViewHolder {
         public TextView textView;
+        public TextView subView;
     }
+
+
+
+    public int getPosition(int position) {
+        return position - sectionHeader.headSet(position).size();
+    }
+
+
+
 }

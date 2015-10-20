@@ -58,4 +58,8 @@ public class GeneralEvent implements Event {
     public String getDescription() {
         return description;
     }
+
+    public String getSubtitle() {
+        return time + "  " + description;
+    }
 }

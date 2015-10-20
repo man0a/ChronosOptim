@@ -13,5 +13,6 @@ public interface Event {
     public String getDate();
     public String getLocation();
     public String getDescription();
+    public String getTitle();
 
 }
