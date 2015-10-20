@@ -75,12 +75,15 @@ public class DateAdapter extends BaseAdapter {
 
     private static List<String> getDateRange() {
 
+        List<String> dates = new ArrayList<String>();
+
+
         Calendar cal = new GregorianCalendar();
         cal.add(Calendar.DATE,30);
         String next_month = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         String current_date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-        List<String> dates = new ArrayList<String>();
+
         DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
 
         Date first_date = null;
@@ -159,25 +162,25 @@ public class DateAdapter extends BaseAdapter {
                     convertView = mInflater.inflate(R.layout.events_layout, null);
                     holder.textView = (TextView) convertView.findViewById(R.id.text);
                     holder.subView = (TextView) convertView.findViewById(R.id.description);
+                    holder.locationView = (TextView) convertView.findViewById(R.id.location);
                     break;
                 case TYPE_SEPARATOR:
                     convertView = mInflater.inflate(R.layout.seperator_header, null);
                     holder.textView = (TextView) convertView.findViewById(R.id.textSeparator);
                     holder.subView = null;
+                    holder.locationView = null;
                     break;
             }
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if(holder.textView != null) {
-            Log.d("null", "textView was Not null");
 
-        }
         holder.textView.setText(title_event.get(position));
-        if(holder.subView != null) {
+        if(holder.subView != null && holder.locationView != null) {
             GeneralEvent activity = (GeneralEvent) event_info.get(position);
             holder.subView.setText(activity.getSubtitle());
+            holder.locationView.setText(activity.getLocation());
         }
 
         return convertView;
@@ -186,14 +189,8 @@ public class DateAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView textView;
         public TextView subView;
+        public TextView locationView;
     }
-
-
-
-    public int getPosition(int position) {
-        return position - sectionHeader.headSet(position).size();
-    }
-
 
 
 }
