@@ -25,9 +25,9 @@ public class EventsView extends ListActivity {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 if (adapter.getItemViewType(position) == 0) {  //Excludes section header from being clickable
-                    Toast.makeText(getBaseContext(), "Id = -1: " + id, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "Item" + id + " was clicked ", Toast.LENGTH_SHORT).show();
                     adapter.myCliquedPosition = position;
-                    Log.d("debug", "my pos in activity" + adapter.myCliquedPosition);
+                    Log.d("onClick", "my pos in activity" + adapter.myCliquedPosition);
                     adapter.notifyDataSetInvalidated();
                 }
             }
