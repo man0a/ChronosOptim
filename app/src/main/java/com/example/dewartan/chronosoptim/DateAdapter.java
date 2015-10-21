@@ -57,10 +57,10 @@ public class DateAdapter extends BaseAdapter {
 
     private List<Event> fakeEvent() {
         List<Event> fakeData = new ArrayList<Event>();
-        GeneralEvent test1 = new GeneralEvent("Vertica", "Tuesday, Oct 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
-        GeneralEvent test2 = new GeneralEvent("SSC", "Wednesday, Oct 21", "1:00pm", "\"105B NanoTwitter Project\"", "NanoTwitter");
-        GeneralEvent test3 = new GeneralEvent("Shapiro", "Thursday, Oct 22", "11:30am", "\"Lunch with Bob\"", "Food");
-        GeneralEvent test4 = new GeneralEvent("Cambridge, MA", "Saturday, Oct 24", "5:00pm", "\"Interview with Company\"", "Interview");
+        GeneralEvent test1 = new GeneralEvent("Vertica", "Friday, Nov 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
+        GeneralEvent test2 = new GeneralEvent("SSC", "Saturday, Nov 21", "1:00pm", "\"105B NanoTwitter Project\"", "NanoTwitter");
+        GeneralEvent test3 = new GeneralEvent("Shapiro", "Tuesday, Dec 22", "11:30am", "\"Lunch with Bob\"", "Food");
+        GeneralEvent test4 = new GeneralEvent("Cambridge, MA", "Thursday, Dec 24", "5:00pm", "\"Interview with Company\"", "Interview");
         GeneralEvent test5 = new GeneralEvent("Home", "Thursday, Oct 29", "6:00pm", "\"Dinner with Fay\"", "Date Night");
         fakeData.add(test1);
         fakeData.add(test2);
@@ -79,7 +79,7 @@ public class DateAdapter extends BaseAdapter {
 
 
         Calendar cal = new GregorianCalendar();
-        cal.add(Calendar.DATE,30);
+        cal.add(Calendar.DATE,90);
         String next_month = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         String current_date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
