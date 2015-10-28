@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <EditText android:id="@+id/inp1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bro"
+        android:hint="@string/hint1">
+
+    </EditText>
+    <EditText android:id="@+id/inp2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bro2"
+        android:hint="@string/hint2">
+
+    </EditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button android:id="@+id/add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            android:onClick="add">
+
+        </Button>
+        <Button android:id="@+id/sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sub"
+            android:onClick="sub">
+
+        </Button>
+        <Button android:id="@+id/mult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mult"
+            android:onClick="mult">
+
+        </Button>
+        <Button android:id="@+id/div"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/div"
+            android:onClick="div">
+
+        </Button>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button android:id="@+id/mod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mod"
+            android:onClick="mod" />
+        <Button android:id="@+id/exp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exp"
+            android:onClick="exp" />
+        <Button android:id="@+id/log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/log"
+            android:onClick="log" />
+        <ImageButton android:id="@+id/web"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/internet"
+            android:onClick="web" />
+
+    </LinearLayout>
+    <TextView android:id="@+id/output"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/default_out">
+
+    </TextView>
+    <!--<EditText android:id="@+id/edit_message"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:hint="@string/edit_message" />-->
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:onClick="sendMessage"-->
+        <!--android:text="@string/button_send" />-->
+</LinearLayout>
