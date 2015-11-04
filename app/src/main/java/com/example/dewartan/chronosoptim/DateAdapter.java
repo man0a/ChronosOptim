@@ -57,11 +57,11 @@ public class DateAdapter extends BaseAdapter {
 
     private List<Event> fakeEvent() {
         List<Event> fakeData = new ArrayList<Event>();
-        GeneralEvent test1 = new GeneralEvent("Vertica", "Friday, Nov 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
-        GeneralEvent test2 = new GeneralEvent("SSC", "Saturday, Nov 21", "1:00pm", "\"105B NanoTwitter Project\"", "NanoTwitter");
-        GeneralEvent test3 = new GeneralEvent("Shapiro", "Tuesday, Dec 22", "11:30am", "\"Lunch with Bob\"", "Food");
-        GeneralEvent test4 = new GeneralEvent("Cambridge, MA", "Thursday, Dec 24", "5:00pm", "\"Interview with Company\"", "Interview");
-        GeneralEvent test5 = new GeneralEvent("Home", "Thursday, Oct 29", "6:00pm", "\"Dinner with Fay\"", "Date Night");
+        Event test1 = new Event("Vertica", "Friday, Nov 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
+        Event test2 = new Event("SSC", "Saturday, Nov 21", "1:00pm", "\"105B NanoTwitter Project\"", "NanoTwitter");
+        Event test3 = new Event("Shapiro", "Tuesday, Dec 22", "11:30am", "\"Lunch with Bob\"", "Food");
+        Event test4 = new Event("Cambridge, MA", "Thursday, Dec 24", "5:00pm", "\"Interview with Company\"", "Interview");
+        Event test5 = new Event("Home", "Thursday, Oct 29", "6:00pm", "\"Dinner with Fay\"", "Date Night");
         fakeData.add(test1);
         fakeData.add(test2);
         fakeData.add(test3);
@@ -139,7 +139,7 @@ public class DateAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) { return title_event.get(position); }
+    public Object getItem(int position) { return event_info.get(position); }
 
     @Override
     public long getItemId(int position) {
@@ -178,7 +178,7 @@ public class DateAdapter extends BaseAdapter {
 
         holder.textView.setText(title_event.get(position));
         if(holder.subView != null && holder.locationView != null) {
-            GeneralEvent activity = (GeneralEvent) event_info.get(position);
+            Event activity = event_info.get(position);
             holder.subView.setText(activity.getSubtitle());
             holder.locationView.setText(activity.getLocation());
         }

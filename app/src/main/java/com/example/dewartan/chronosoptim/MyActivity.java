@@ -1,4 +1,4 @@
-package eduprakhar.brandeis.cs.paxitor;
+package com.example.dewartan.chronosoptim;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,7 +50,9 @@ public class MyActivity extends AppCompatActivity {
     public void web(View view){
         TextView tw = (TextView)findViewById(R.id.output);
         //
-        ServerPing ping=new ServerPing(tw,"grubs"); //json on the grubs
+        Event test1 = new Event("Vertica", "Friday, Nov 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
+
+        ServerPing ping=new ServerPing(tw,test1.toJSON()); //json on the grubs
         ping.execute("http://www.cs.brandeis.edu//~prakhar/hello.php"); // execute is part of async task
 
         /*

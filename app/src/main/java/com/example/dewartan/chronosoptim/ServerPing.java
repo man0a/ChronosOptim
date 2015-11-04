@@ -1,4 +1,4 @@
-package eduprakhar.brandeis.cs.paxitor;
+package com.example.dewartan.chronosoptim;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -73,7 +73,7 @@ public class ServerPing extends AsyncTask<String, Void, String> {
 
     private void serverEmit(OutputStream out){
         PrintWriter writer=new PrintWriter(out);
-        String data2="poop="+data;
+        String data2="poop="+data; //poop= as keyvalue pair
         Log.w(TAG,data2);
         writer.println(data2);
         writer.flush();
