@@ -3,24 +3,27 @@ package com.example.dewartan.chronosoptim;
 import java.text.*;
 import java.util.*;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
  * Created by dewartan on 10/20/15.
  */
-public class DateAdapter extends BaseAdapter {
+public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
     private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
-
 
     private List<String> title_event = new ArrayList<String>();
     private List<Event> event_info = new ArrayList<Event>();
@@ -125,20 +128,48 @@ public class DateAdapter extends BaseAdapter {
     }
 
 
-    @Override
     public int getViewTypeCount() { return TYPE_MAX_COUNT; }
+
+    @Override
+    public DateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = null;
+        switch (viewType) {
+            case TYPE_ITEM:
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.events_layout, parent, false);
+                break;
+            case TYPE_SEPARATOR:
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.seperator_header, parent, false);
+                break;
+        }
+
+
+        return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+            int rowType = getItemViewType(position);
+            View convertView;
+        switch (rowType) {
+                case TYPE_ITEM:
+                    holder.textView.setText(title_event.get(position));
+                    Event activity = event_info.get(position);
+                    holder.subView.setText(activity.getSubtitle());
+                    holder.locationView.setText(activity.getLocation());
+                    break;
+                case TYPE_SEPARATOR:
+                    holder.textView.setText(title_event.get(position));
+                    break;
+            }
+    }
+
 
     @Override
     public int getItemViewType(int position) {
         return sectionHeader.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM;
     }
 
-    @Override
-    public int getCount() {
-        return title_event.size();
-    }
 
-    @Override
     public Object getItem(int position) { return event_info.get(position); }
 
     @Override
@@ -147,50 +178,39 @@ public class DateAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        int rowType = getItemViewType(position);
-        Log.d("number", ""+position);
-        Log.d("inserted", title_event.get(position));
-//        Log.d("inserted", event_info.get(position).getDescription());
-
-        if (convertView == null) {
-            Log.d("null", "convertView was null");
-            holder = new ViewHolder();
-            switch (rowType) {
-                case TYPE_ITEM:
-                    convertView = mInflater.inflate(R.layout.events_layout, null);
-                    holder.textView = (TextView) convertView.findViewById(R.id.text);
-                    holder.subView = (TextView) convertView.findViewById(R.id.description);
-                    holder.locationView = (TextView) convertView.findViewById(R.id.location);
-                    break;
-                case TYPE_SEPARATOR:
-                    convertView = mInflater.inflate(R.layout.seperator_header, null);
-                    holder.textView = (TextView) convertView.findViewById(R.id.textSeparator);
-                    holder.subView = null;
-                    holder.locationView = null;
-                    break;
-            }
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        holder.textView.setText(title_event.get(position));
-        if(holder.subView != null && holder.locationView != null) {
-            Event activity = event_info.get(position);
-            holder.subView.setText(activity.getSubtitle());
-            holder.locationView.setText(activity.getLocation());
-        }
-
-        return convertView;
+    public int getItemCount() {
+        return title_event.size();
     }
 
-    public static class ViewHolder {
+
+    public final class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView textView;
         public TextView subView;
         public TextView locationView;
+        private final Context context;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            textView = (TextView) itemView.findViewById(R.id.text);
+            subView = (TextView) itemView.findViewById(R.id.description);
+            locationView = (TextView) itemView.findViewById(R.id.location);
+            context = itemView.getContext();
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            final Intent i;
+            i = new Intent(context, EventView.class);
+            Event eventOnDay = (Event) getItem(getPosition());
+            i.putExtra("viewEvent", eventOnDay);
+            context.startActivity(i);
+        }
+
     }
 
 
+
 }
+
+

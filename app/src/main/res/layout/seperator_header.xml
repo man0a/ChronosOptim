@@ -2,9 +2,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:layout_width="fill_parent">
+
     <TextView
-        android:id="@+id/textSeparator"
+        android:id="@+id/text"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="text"
