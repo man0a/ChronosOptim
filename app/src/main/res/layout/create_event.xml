@@ -71,7 +71,8 @@
 
 
             <EditText
-                android:inputType="textMultiLine"
+            android:id="@+id/input_description"
+            android:inputType="textMultiLine"
                 android:lines="8"
                 android:minLines="6"
                 android:gravity="top|left"
@@ -80,11 +81,7 @@
                 android:layout_width="fill_parent"
                 android:scrollbars="vertical"
                 android:hint="@string/description" />
-            <!--<EditText-->
-                <!--android:id="@+id/input_description"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:maxLines="10"-->
-                <!--android:layout_height="wrap_content"-->
+
         </android.support.design.widget.TextInputLayout>
 
 

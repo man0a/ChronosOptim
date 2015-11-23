@@ -8,12 +8,13 @@ import android.os.Parcelable;
  * Created by dewartan on 10/20/15.
  */
 public class Event implements Parcelable {
-    private String location, date, time, description, title;
+    private String location, date, startTime, endTime, description, title;
 
-    public Event(String location, String date, String time, String description, String title) {
+    public Event(String location, String date, String startTime, String endTime, String description, String title) {
         this.location= location;
         this.date = date;
-        this.time = time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.description = description;
         this.title = title;
 
@@ -22,7 +23,8 @@ public class Event implements Parcelable {
     protected Event(Parcel in) {
         this.location = in.readString();
         this.date = in.readString();
-        this.time = in.readString();
+        this.startTime = in.readString();
+        this.endTime = in.readString();
         this.description = in.readString();
         this.title = in.readString();
     }
@@ -53,19 +55,13 @@ public class Event implements Parcelable {
     }
 
 
-    public void changeTime(String time) {
-        this.time = time;
 
-    }
 
     public void changeLocation(String location) {
         this.location = location;
     }
 
 
-    public String getTime() {
-        return time;
-    }
 
     public String getDate() {
         return date;
@@ -80,17 +76,17 @@ public class Event implements Parcelable {
     }
 
     public String getSubtitle() {
-        return time + "  " + description;
+        return startTime + "  " + description;
     }
 
-    public String toJSON() {
-        return
-                "{location:\'" + getLocation() +
-                "\',title:\'"+ getTitle() +
-                "\',time:\'" +getTime()+
-                "\',date:\'"+ getDate()+
-                "\',description:\'"+ getDescription()+"}";
-    }
+//    public String toJSON() {
+//        return
+//                "{location:\'" + getLocation() +
+//                "\',title:\'"+ getTitle() +
+//                "\',time:\'" +getTime()+
+//                "\',date:\'"+ getDate()+
+//                "\',description:\'"+ getDescription()+"}";
+//    }
 
     @Override
     public int describeContents() {
@@ -101,7 +97,8 @@ public class Event implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(location);
         dest.writeString(date);
-        dest.writeString(time);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
         dest.writeString(description);
         dest.writeString(title);
 

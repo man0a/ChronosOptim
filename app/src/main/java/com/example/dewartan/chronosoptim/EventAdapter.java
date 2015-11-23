@@ -9,24 +9,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
  * Created by dewartan on 10/20/15.
  */
-public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
+public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
 
+    private static EventDBAdapter eventDB;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
     private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
 
     private List<String> title_event = new ArrayList<String>();
     private List<Event> event_info = new ArrayList<Event>();
+    private List<String> dateRange = new ArrayList<String>();
 
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
 
@@ -34,22 +32,34 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     public int myCliquedPosition;
 
 
-    public DateAdapter(Context context) {
+    public EventAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        eventDB = new EventDBAdapter(context);
         initHeaders();
     }
 
     private void initHeaders() {
-        List<String> getDates = getDateRange();
-        List<Event> FakeData = fakeEvent();
-        for(String date: getDates) {
+        dateRange = getDateRange(); //Grabs the next 90 days
+        ArrayList<Event> dbEvents = eventDB.getAllEvents();
+        Event test1 = new Event("Vertica", "Monday, Nov 30-2015", "17:00", "18:00", "\"Meeting Today\"", "MAD Project Meeting");
+        Event test2 = new Event("SSC", "Saturday, Dec 12-2015", "13:00", "14:00", "\"105B NanoTwitter Project\"", "NanoTwitter");
+        Event test3 = new Event("Shapiro", "Tuesday, Dec 22-2015","11:30", "12:30", "\"Lunch with Bob\"", "Food");
+        Event test4 = new Event("Cambridge, MA", "Thursday, Dec 24-2015", "18:00", "19:00", "\"Interview with Company\"", "Interview");
+        Event test5 = new Event("Home", "Friday, Dec 31-2015", "18:00", "19:00", "\"Dinner with Fay\"", "Date Night");
+        dbEvents.add(test1);
+        dbEvents.add(test2);
+        dbEvents.add(test3);
+        dbEvents.add(test4);
+        dbEvents.add(test5);
+
+        for(String date: dateRange) {
             boolean header_added = false;
-            for(Event data:FakeData) {
+            for(Event data:dbEvents) {
                 Log.d("Date", date);
 
                 if (date.equals(data.getDate()) && !header_added) {
                     header_added = true;
-                    addSectionHeaderItem(date);
+                    addSectionHeaderItem(date); //Adds in date
                     addItem(data);
                 } else if(date.equals(data.getDate())) {
                     addItem(data);
@@ -58,20 +68,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
         }
     }
 
-    private List<Event> fakeEvent() {
-        List<Event> fakeData = new ArrayList<Event>();
-        Event test1 = new Event("Vertica", "Friday, Nov 20", "5:00pm", "\"Meeting Today\"", "MAD Project Meeting");
-        Event test2 = new Event("SSC", "Saturday, Nov 21", "1:00pm", "\"105B NanoTwitter Project\"", "NanoTwitter");
-        Event test3 = new Event("Shapiro", "Tuesday, Dec 22", "11:30am", "\"Lunch with Bob\"", "Food");
-        Event test4 = new Event("Cambridge, MA", "Thursday, Dec 24", "5:00pm", "\"Interview with Company\"", "Interview");
-        Event test5 = new Event("Home", "Thursday, Oct 29", "6:00pm", "\"Dinner with Fay\"", "Date Night");
-        fakeData.add(test1);
-        fakeData.add(test2);
-        fakeData.add(test3);
-        fakeData.add(test4);
-        fakeData.add(test5);
-        return fakeData;
-    }
+
 
 
 
@@ -80,12 +77,10 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
 
         List<String> dates = new ArrayList<String>();
 
-
         Calendar cal = new GregorianCalendar();
-        cal.add(Calendar.DATE,90);
+        cal.add(Calendar.DATE, 90); //Get the next three months
         String next_month = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         String current_date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
 
         DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -108,16 +103,29 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
 
         while (!cal1.after(cal2)) {
             String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(cal1.getTime());
-            dates.add(dayOfWeek + ", " + (new SimpleDateFormat("MMM dd").format(cal1.getTime())) );
+            dates.add(dayOfWeek + ", " + (new SimpleDateFormat("MMM dd").format(cal1.getTime())) +"-" + (cal1.get(Calendar.YEAR)) );
             cal1.add(Calendar.DATE, 1);
         }
         return dates;
     }
 
+
+    public boolean contains(Event event) {
+        return event_info.contains(event);
+    }
+
     public void addItem(final Event event) {
-        title_event.add(event.getTitle());
-        event_info.add(event);
-        notifyDataSetChanged();
+
+        if(dateRange.contains(event.getDate()) && !title_event.contains(event.getDate())) {
+            title_event.add(event.getDate());
+            event_info.add(null); //For spacing
+            sectionHeader.add(title_event.size() - 1);
+            notifyDataSetChanged();
+        } else {
+            title_event.add(event.getTitle());
+            event_info.add(event);
+            notifyDataSetChanged();
+        }
     }
 
     public void addSectionHeaderItem(final String item) {
@@ -131,7 +139,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     public int getViewTypeCount() { return TYPE_MAX_COUNT; }
 
     @Override
-    public DateAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EventAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = null;
         switch (viewType) {
             case TYPE_ITEM:
@@ -149,7 +157,6 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
             int rowType = getItemViewType(position);
-            View convertView;
         switch (rowType) {
                 case TYPE_ITEM:
                     holder.textView.setText(title_event.get(position));
@@ -201,7 +208,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             final Intent i;
-            i = new Intent(context, EventView.class);
+            i = new Intent(context, IndividualEventView.class);
             Event eventOnDay = (Event) getItem(getPosition());
             i.putExtra("viewEvent", eventOnDay);
             context.startActivity(i);

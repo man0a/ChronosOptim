@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -14,6 +16,7 @@ import org.w3c.dom.Text;
 public class AddChannel extends AppCompatActivity {
 
     private TextView toolbarTitle;
+    private Button cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +24,21 @@ public class AddChannel extends AppCompatActivity {
         setContentView(R.layout.create_channel);
         Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
-        toolbarTitle = (TextView) toolbarTitle.findViewById(R.id.toolbar_title);
+        toolbarTitle = (TextView) actionBarToolBar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Add Channel");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+
+        cancel = (Button) findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

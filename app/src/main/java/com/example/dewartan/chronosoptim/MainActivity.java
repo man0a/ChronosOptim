@@ -10,19 +10,28 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, View.OnClickListener, ActionMode.Callback {
 
-    private DateAdapter adapter;
+    private EventDBAdapter eventDBAdapter;
+    private static EventAdapter adapter;
+    private ChannelAdapter cAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private Toolbar actionBarToolBar;
+    private Button feedBtn, eventBtn;
+    int add_event_code = 1;
+    int add_channel_code = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +43,50 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         recyclerView.setLayoutManager(mLayoutManager);
         actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
-        adapter = new DateAdapter(this);
-        recyclerView.setAdapter(adapter);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
+        adapter = new EventAdapter(this);
+        cAdapter = new ChannelAdapter(this);
+
+        eventDBAdapter = new EventDBAdapter(this);
+        ArrayList<Event> databaseEvents = eventDBAdapter.getAllEvents();
+        addFromDatabase(databaseEvents);
+
+
+        recyclerView.setAdapter(adapter);
+
+
+
+
+        feedBtn = (Button) findViewById(R.id.showfeeds);
+        eventBtn = (Button) findViewById(R.id.showeventslist);
+        feedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setAdapter(cAdapter);
+
+            }
+        });
+
+        eventBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                recyclerView.setAdapter(adapter);
+            }
+
+        });
+    }
+
+
+    public static void addFromDatabase(ArrayList<Event> arr ){
+        for(int i =0; i<arr.size();i ++) {
+            Event item = arr.get(i);
+            if(!adapter.contains(item)) {
+                adapter.addItem(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -55,12 +104,36 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if(id == R.id.create_event) {
-            startActivity(new Intent(this, AddEvent.class));
+            startActivityForResult(new Intent(this, AddEvent.class), add_event_code);
+            return true;
+        }
+
+        if(id == R.id.create_channel) {
+            startActivity(new Intent(this, AddChannel.class));
+            return true;
+        }
+
+        if(id == R.id.clear_database) {
+            eventDBAdapter.clearDatabase();
+            adapter = new EventAdapter(this);
+            recyclerView.setAdapter(adapter);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == add_event_code) {
+            if (resultCode == RESULT_OK) {
+
+                Toast.makeText(getBaseContext(), "Sucessfully added", Toast.LENGTH_SHORT).show();
+
+                adapter = new EventAdapter(this);
+                recyclerView.setAdapter(adapter);
+
+            }
+        }
+    }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -76,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
 //                    Log.d("onClick", "my pos in activity" + adapter.myCliquedPosition);
-        Intent i = new Intent(getBaseContext(), EventView.class);
+        Intent i = new Intent(getBaseContext(), IndividualEventView.class);
 
         Event eventOnDay = (Event) adapter.getItem(item.getItemId());
         i.putExtra("viewEvent", eventOnDay);

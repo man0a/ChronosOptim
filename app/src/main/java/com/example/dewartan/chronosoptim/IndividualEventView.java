@@ -14,7 +14,7 @@ import android.widget.TextView;
 /**
  * Created by dewartan on 10/29/15.
  */
-public class EventView extends AppCompatActivity {
+public class IndividualEventView extends AppCompatActivity {
     private Toolbar actionBarToolBar;
     TextView title, location, description, date, toolbarTitle;
 

@@ -16,7 +16,7 @@
         </activity>
 
 
-        <activity android:name=".EventView">
+        <activity android:name=".IndividualEventView">
             <intent-filter>
                 <action android:name="com.example.dewartan.chronosoptim.EventView" />
                 <category android:name="android.intent.category.DEFAULT" />
