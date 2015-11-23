@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -16,7 +17,9 @@ import org.w3c.dom.Text;
 public class AddChannel extends AppCompatActivity {
 
     private TextView toolbarTitle;
-    private Button cancel;
+    private ChannelDBAdapter channelDB;
+    private Button cancel, save;
+    private EditText mDescription, mName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +34,27 @@ public class AddChannel extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
+        channelDB = new ChannelDBAdapter(this);
+
+
+        mName = (EditText) findViewById(R.id.input_channel_name);
+        mDescription = (EditText) findViewById(R.id.input_description);
 
         cancel = (Button) findViewById(R.id.cancel);
+        save = (Button) findViewById(R.id.save);
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                channelDB.insertChannel(
+                        mName.getText().toString(),
+                        mDescription.getText().toString()
+                );
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

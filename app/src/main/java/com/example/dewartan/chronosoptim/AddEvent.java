@@ -124,6 +124,12 @@ public class AddEvent extends AppCompatActivity {
         calendarButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+                calendarDate.setText(mMonth+1 + "-" + mDay+ "-" + mYear);
+
              cur = DATE_DIALOG;
 
             showDialog(DATE_DIALOG);
@@ -134,12 +140,7 @@ public class AddEvent extends AppCompatActivity {
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH)+1;
-                mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                calendarDate.setText(mMonth + "-" + mDay+ "-" + mYear);
                 cur = TIME_DIALOG_ID;
                 showDialog(TIME_DIALOG_ID);
             }

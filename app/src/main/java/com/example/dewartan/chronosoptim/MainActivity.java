@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, View.OnClickListener, ActionMode.Callback {
 
     private EventDBAdapter eventDBAdapter;
+    private ChannelDBAdapter channelDBAdapter;
     private static EventAdapter adapter;
     private ChannelAdapter cAdapter;
     private RecyclerView recyclerView;
@@ -37,10 +38,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
+
+        //RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
+
+
         actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -50,17 +55,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         cAdapter = new ChannelAdapter(this);
 
         eventDBAdapter = new EventDBAdapter(this);
+        channelDBAdapter = new ChannelDBAdapter(this);
         ArrayList<Event> databaseEvents = eventDBAdapter.getAllEvents();
-        addFromDatabase(databaseEvents);
-
 
         recyclerView.setAdapter(adapter);
 
-
-
-
         feedBtn = (Button) findViewById(R.id.showfeeds);
         eventBtn = (Button) findViewById(R.id.showeventslist);
+
         feedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,16 +80,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         });
     }
 
-
-    public static void addFromDatabase(ArrayList<Event> arr ){
-        for(int i =0; i<arr.size();i ++) {
-            Event item = arr.get(i);
-            if(!adapter.contains(item)) {
-                adapter.addItem(item);
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
 
 
     @Override
@@ -109,12 +101,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         }
 
         if(id == R.id.create_channel) {
-            startActivity(new Intent(this, AddChannel.class));
+            startActivityForResult(new Intent(this, AddChannel.class), add_channel_code);
             return true;
         }
 
         if(id == R.id.clear_database) {
             eventDBAdapter.clearDatabase();
+            channelDBAdapter.clearDatabase();
+            cAdapter = new ChannelAdapter(this);
             adapter = new EventAdapter(this);
             recyclerView.setAdapter(adapter);
             return true;
@@ -125,12 +119,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == add_event_code) {
             if (resultCode == RESULT_OK) {
-
                 Toast.makeText(getBaseContext(), "Sucessfully added", Toast.LENGTH_SHORT).show();
-
                 adapter = new EventAdapter(this);
                 recyclerView.setAdapter(adapter);
 
+            }
+        }
+        if (requestCode == add_channel_code) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getBaseContext(), "Sucessfully added", Toast.LENGTH_SHORT).show();
+                Log.d("worked", "cjknclkjn");
+                cAdapter = new ChannelAdapter(this);
+                recyclerView.setAdapter(cAdapter);
             }
         }
     }
@@ -147,11 +147,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-//                    Log.d("onClick", "my pos in activity" + adapter.myCliquedPosition);
-        Intent i = new Intent(getBaseContext(), IndividualEventView.class);
-
         Event eventOnDay = (Event) adapter.getItem(item.getItemId());
+        Intent i = new Intent(getBaseContext(), IndividualEventView.class);
         i.putExtra("viewEvent", eventOnDay);
         Toast.makeText(getBaseContext(), eventOnDay.getTitle(), Toast.LENGTH_SHORT).show();
         startActivity(i);

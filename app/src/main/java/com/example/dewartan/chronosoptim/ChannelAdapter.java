@@ -19,7 +19,7 @@ import android.widget.TextView;
 public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHolder> {
 
     private List<Channel> feeds = new ArrayList<Channel>();
-
+    private ChannelDBAdapter channelDB;
 
     private LayoutInflater mInflater;
 
@@ -27,34 +27,25 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
 
     public ChannelAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        channelDB = new ChannelDBAdapter(context);
         initHeaders();
     }
 
     private void initHeaders() {
-        this.feeds = fakeEvent();
-    }
-
-    private List<Channel> fakeEvent() {
-        List<Channel> fakeData = new ArrayList<Channel>();
+        ArrayList<Channel> allChannels = channelDB.getAllChannels();
         Channel test1 = new Channel("Data Structures", "Cosi 21a Class");
         Channel test2 = new Channel("Chess Club", "For all those whom love chess");
         Channel test3 = new Channel("Lacrosse Events", "Sporting events concerning Brandeis Lacrosse");
         Channel test4 = new Channel("Patriots Fan Club", "New England Patriots Fan Club");
         Channel test5 = new Channel("Ultimate Frisbee Pickup", "Pickup games for Ultimate Frisbee");
-        fakeData.add(test1);
-        fakeData.add(test2);
-        fakeData.add(test3);
-        fakeData.add(test4);
-        fakeData.add(test5);
-        return fakeData;
-    }
+        allChannels.add(test1);
+        allChannels.add(test2);
+        allChannels.add(test3);
+        allChannels.add(test4);
+        allChannels.add(test5);
+        this.feeds = allChannels;
 
-//
-//    public void addItem(final Event event) {
-//        title_event.add(event.getTitle());
-//        event_info.add(event);
-//        notifyDataSetChanged();
-//    }
+    }
 
     @Override
     public ChannelAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -90,7 +81,6 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
     public final class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView textView;
         public TextView subView;
-        public CheckBox checkBox;
         private final Context context;
 
         public ViewHolder(View itemView) {

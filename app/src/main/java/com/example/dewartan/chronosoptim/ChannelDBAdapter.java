@@ -41,11 +41,16 @@ public class ChannelDBAdapter extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("description", description);
         contentValues.put("name", name);
-
+        contentValues.put("description", description);
         db.insert("channel", null, contentValues);
         return true;
+    }
+
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String clearDBQuery = "DELETE FROM "+ CHANNEL_TABLE_NAME;
+        db.execSQL(clearDBQuery);
     }
 
     public Cursor getData(int id){
@@ -60,7 +65,7 @@ public class ChannelDBAdapter extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateExpense (Integer id, String description, String note, String date)
+    public boolean updateChannel (Integer id, String description, String note, String date)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -71,13 +76,13 @@ public class ChannelDBAdapter extends SQLiteOpenHelper {
         return true;
     }
 
-    public Integer deleteExpense (int id)
+    public Integer deleteChannel (int id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("channel", "id = ? ", new String[] { Integer.toString(id) });
     }
 
-    public ArrayList<Channel> getAllExpenses()
+    public ArrayList<Channel> getAllChannels()
     {
         ArrayList<Channel> array_list = new ArrayList<Channel>();
 

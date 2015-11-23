@@ -59,6 +59,7 @@
                     android:lines="6"
                     android:minLines="3"
                     android:gravity="top|left"
+                    android:id="@+id/input_description"
                     android:maxLines="6"
                     android:layout_height="wrap_content"
                     android:layout_width="fill_parent"
