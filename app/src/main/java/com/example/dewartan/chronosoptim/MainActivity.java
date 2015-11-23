@@ -5,17 +5,21 @@ package com.example.dewartan.chronosoptim;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     private Button feedBtn, eventBtn;
     int add_event_code = 1;
     int add_channel_code = 2;
+    private TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,41 +50,62 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
-
+        //Setup Toolbar
         actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
+        title = (TextView) actionBarToolBar.findViewById(R.id.toolbar_title);
+        title.setText("Chronos Optim");
         setSupportActionBar(actionBarToolBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabanim_tabs);
+        tabLayout.addTab(tabLayout.newTab().setText("Events"));
+        tabLayout.addTab(tabLayout.newTab().setText("Channels"));
+
+        //RecyclerView Adapters
         adapter = new EventAdapter(this);
         cAdapter = new ChannelAdapter(this);
 
+        //Database Adapters
         eventDBAdapter = new EventDBAdapter(this);
         channelDBAdapter = new ChannelDBAdapter(this);
-        ArrayList<Event> databaseEvents = eventDBAdapter.getAllEvents();
 
         recyclerView.setAdapter(adapter);
 
-        feedBtn = (Button) findViewById(R.id.showfeeds);
-        eventBtn = (Button) findViewById(R.id.showeventslist);
-
-        feedBtn.setOnClickListener(new View.OnClickListener() {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View v) {
-                recyclerView.setAdapter(cAdapter);
+            public void onTabSelected(TabLayout.Tab tab) {
+//                viewPager.setCurrentItem(tab.getPosition());
+
+                switch (tab.getPosition()) {
+                    case 0:
+                        showToast("One");
+                        recyclerView.setAdapter(adapter);
+                        break;
+                    case 1:
+                        recyclerView.setAdapter(cAdapter);
+                        showToast("Two");
+                        break;
+                }
+            }
+
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
 
-        eventBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                recyclerView.setAdapter(adapter);
-            }
 
-        });
     }
-
+    void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
 
 
     @Override
@@ -122,13 +148,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 Toast.makeText(getBaseContext(), "Sucessfully added", Toast.LENGTH_SHORT).show();
                 adapter = new EventAdapter(this);
                 recyclerView.setAdapter(adapter);
-
             }
         }
         if (requestCode == add_channel_code) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(getBaseContext(), "Sucessfully added", Toast.LENGTH_SHORT).show();
-                Log.d("worked", "cjknclkjn");
                 cAdapter = new ChannelAdapter(this);
                 recyclerView.setAdapter(cAdapter);
             }
@@ -147,11 +171,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        Event eventOnDay = (Event) adapter.getItem(item.getItemId());
-        Intent i = new Intent(getBaseContext(), IndividualEventView.class);
-        i.putExtra("viewEvent", eventOnDay);
-        Toast.makeText(getBaseContext(), eventOnDay.getTitle(), Toast.LENGTH_SHORT).show();
-        startActivity(i);
         return false;
     }
 

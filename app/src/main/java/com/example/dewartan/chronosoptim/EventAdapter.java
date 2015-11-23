@@ -149,8 +149,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.seperator_header, parent, false);
                 break;
         }
-
-
         return new ViewHolder(itemView);
     }
 
