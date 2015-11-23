@@ -1,59 +1,49 @@
 /* Prakhar Sahay 10/15/2015
 
-
+A single user device, able to add(event), connect(), disconnect().
+It implements uponSync() for SyncBuffer.
 */
 
 import java.util.*;
 
 public class Device{
-	public Server server;
-	public boolean waitingForServer;
-	public ArrayList<Event> buffer=new ArrayList<Event>();
-	public boolean synced=true;
-	public ArrayList<Event> localSchedule=new ArrayList<Event>();
+	private SyncBuffer buffer;
+	public ArrayList<Action> localSchedule;
+	// private User user;
+	private String userID;
 
 	public Device(){
-		if(!buffer.isEmpty()){
-			save();
-		}
+		localSchedule=new ArrayList<Action>();
+		buffer=new SyncBuffer(this);
 	}
 
-	public void save(Event event){
-		synced=false;
-		buffer.add(event);
-		if(server!=null){
-			save();
-		}
+	public void send(String data){
+		// App user creates a new event.
+		Action action=new Action(data,userID);
+		localSchedule.add(action);
+		buffer.add(action);
 	}
 
-	public void save(){
-		if(synced || server==null || waitingForServer){
-			return;
-		}
-		waitingForServer=true;
-		do{
-			server.send(buffer);
-			ArrayList<Event> results=server.response(this);
-			synced=confirm(results);
-		}while(!synced || !buffer.isEmpty());
-
-		waitingForServer=false;
-	}
-
-	private boolean confirm(ArrayList<Event> results){
-		if(results.equals(buffer)){
-			buffer.empty();
-			return true;
-		}
-		return false;
-	}
-
-	public void connect(Server server){
-		this.server=server;
-		server.connect(this);
+	public void connect(){
+		// App user gains Internet connection.
+		buffer.connected=true;
+		buffer.sync();
 	}
 
 	public void disconnect(){
-		this.server=null;
+		// App user loses Internet connection.
+		buffer.connected=false;
+	}
+
+	public void uponSync(String s){
+		// interface for SyncBuffer
+		// called when synced
+		if(userID==null){
+			userID=s;
+		}
+	}
+
+	public String getID(){
+		return userID;
 	}
 }
