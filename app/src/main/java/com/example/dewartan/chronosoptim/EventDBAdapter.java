@@ -29,8 +29,6 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         super(context, DATABASE_NAME , null, 1);
     }
 
-
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
@@ -44,7 +42,6 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS event");
         onCreate(db);
     }
-
 
     public void clearDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();

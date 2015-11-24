@@ -1,7 +1,0 @@
-keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -validity 10000
-
-
-keytool -exportcert \
--alias alias_name \
--keystore /Users/dewartan/desktop/ChronosOptim/my-release-key.keystore \
--list -v

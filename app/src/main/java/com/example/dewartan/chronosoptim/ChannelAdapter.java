@@ -20,10 +20,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
 
     private List<Channel> feeds = new ArrayList<Channel>();
     private ChannelDBAdapter channelDB;
-
     private LayoutInflater mInflater;
-
-
 
     public ChannelAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -44,7 +41,6 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
         allChannels.add(test4);
         allChannels.add(test5);
         this.feeds = allChannels;
-
     }
 
     @Override
@@ -52,8 +48,6 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_view, parent, false);
         return new ViewHolder(itemView);
     }
-
-
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
