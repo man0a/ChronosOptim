@@ -7,36 +7,5 @@
     android:background="?attr/colorPrimary"
     android:elevation="4dp">
 
-
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:id="@+id/showeventslist"-->
-        <!--android:textSize="18sp"-->
-        <!--android:background="@drawable/my_shape"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:textColor="#FFF"-->
-        <!--android:layout_margin="10dp"-->
-
-        <!--android:text="@string/events" />-->
-
-
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:id="@+id/showfeeds"-->
-        <!--android:textSize="18sp"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:textColor="#FFF"-->
-        <!--android:background="@drawable/my_shape"-->
-        <!--android:layout_margin="10dp"-->
-
-        <!--android:text="@string/feeds"/>-->
 </android.support.v7.widget.Toolbar>
 
