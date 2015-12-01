@@ -42,7 +42,7 @@ public class AddEvent extends AppCompatActivity {
 
 
     private TextView start_time, end_time, calendarDate, toolbarTitle;
-    private EditText inputTitle, inputLocation, inputDescription;
+    private EditText inputTitle, inputLocation, inputDescription, inputSubtitle;
 
     private Toolbar actionBarToolBar;
 
@@ -73,6 +73,7 @@ public class AddEvent extends AppCompatActivity {
         inputTitle = (EditText) findViewById(R.id.input_title);
         inputLocation = (EditText)  findViewById(R.id.input_location);
         inputDescription = (EditText) findViewById(R.id.input_description);
+        inputSubtitle = (EditText) findViewById(R.id.input_subtitle);
 
         cancelButton = (Button) findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new View.OnClickListener(){
@@ -108,6 +109,7 @@ public class AddEvent extends AppCompatActivity {
                         inputLocation.getText().toString(),
                         end_time.getText().toString(),
                         inputTitle.getText().toString(),
+                        inputSubtitle.getText().toString(),
                         insertDate);
                 setResult(RESULT_OK);
                 finish();

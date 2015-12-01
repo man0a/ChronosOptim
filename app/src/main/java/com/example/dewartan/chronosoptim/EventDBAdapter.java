@@ -23,6 +23,9 @@ public class EventDBAdapter extends SQLiteOpenHelper {
     public static final String EVENT_COLUMN_ENDTIME = "endtime";
     public static final String EVENT_COLUMN_LOCATION = "location";
 
+    public static final String EVENT_COLUMN_SUBTITLE = "subtitle";
+
+
 
     public EventDBAdapter(Context context)
     {
@@ -33,7 +36,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         db.execSQL("create table event " +
-                "(id integer primary key, title text, description text, eventdate text, starttime text, endtime text, location text)");
+                "(id integer primary key, title text, description text, eventdate text, starttime text, endtime text, location text, subtitle text)");
     }
 
     @Override
@@ -49,7 +52,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         db.execSQL(clearDBQuery);
     }
 
-    public boolean insertEvent(String description, String starttime, String location, String endtime, String title, String eventdate)
+    public boolean insertEvent(String description, String starttime, String location, String endtime, String title, String eventdate, String subtitle)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -59,6 +62,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         contentValues.put("starttime", starttime);
         contentValues.put("endtime", endtime);
         contentValues.put("location", location);
+        contentValues.put("subttitle", subtitle);
         db.insert("event", null, contentValues);
         return true;
     }
@@ -75,7 +79,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateEvent (Integer id, String description, String starttime, String location, String endtime, String title, String eventdate)
+    public boolean updateEvent (Integer id, String description, String starttime, String location, String endtime, String title, String eventdate, String subtitle)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -85,6 +89,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         contentValues.put("starttime", starttime);
         contentValues.put("endtime", endtime);
         contentValues.put("location", location);
+        contentValues.put("subtitle", subtitle);
         db.update("event", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
     }
@@ -111,7 +116,8 @@ public class EventDBAdapter extends SQLiteOpenHelper {
             String starttime = res.getString(res.getColumnIndex(EVENT_COLUMN_STARTTIME));
             String endtime = res.getString(res.getColumnIndex(EVENT_COLUMN_ENDTIME));
             String description = res.getString(res.getColumnIndex(EVENT_COLUMN_DESCRIPTION));
-            array_list.add(new Event(location, eventdate, starttime, endtime, description, title));
+            String subtitle = res.getString(res.getColumnIndex(EVENT_COLUMN_SUBTITLE));
+            array_list.add(new Event(location, eventdate, starttime, endtime, description, title, subtitle));
             res.moveToNext();
         }
         return array_list;

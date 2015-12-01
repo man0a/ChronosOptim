@@ -41,11 +41,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     private void initHeaders() {
         dateRange = getDateRange(); //Grabs the next 90 days
         ArrayList<Event> dbEvents = eventDB.getAllEvents();
-        Event test1 = new Event("Vertica", "Monday, Nov 30-2015", "17:00", "18:00", "\"Meeting Today\"", "MAD Project Meeting");
-        Event test2 = new Event("SSC", "Saturday, Dec 12-2015", "13:00", "14:00", "\"105B NanoTwitter Project\"", "NanoTwitter");
-        Event test3 = new Event("Shapiro", "Tuesday, Dec 22-2015","11:30", "12:30", "\"Lunch with Bob\"", "Food");
-        Event test4 = new Event("Cambridge, MA", "Thursday, Dec 24-2015", "18:00", "19:00", "\"Interview with Company\"", "Interview");
-        Event test5 = new Event("Home", "Friday, Dec 31-2015", "18:00", "19:00", "\"Dinner with Fay\"", "Date Night");
+        Event test1 = new Event("Vertica", "Monday, Nov 30-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page");
+        Event test2 = new Event("SSC", "Saturday, Dec 12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project");
+        Event test3 = new Event("Shapiro", "Tuesday, Dec 22-2015","11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment" , "Food", "Lunch with Bob");
+        Event test4 = new Event("Cambridge, MA", "Thursday, Dec 24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes " , "Interview", "Interview with Company");
+        Event test5 = new Event("Home", "Friday, Dec 31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay");
         dbEvents.add(test1);
         dbEvents.add(test2);
         dbEvents.add(test3);

@@ -8,11 +8,12 @@ import android.os.Parcelable;
  * Created by dewartan on 10/20/15.
  */
 public class Event implements Parcelable {
-    private String location, date, startTime, endTime, description, title;
+    private String location, date, startTime, endTime, description, title, subtitle;
 
-    public Event(String location, String date, String startTime, String endTime, String description, String title) {
+    public Event(String location, String date, String startTime, String endTime, String description, String title, String subtitle) {
         this.location= location;
         this.date = date;
+        this.subtitle = subtitle;
         this.startTime = startTime;
         this.endTime = endTime;
         this.description = description;
@@ -76,7 +77,7 @@ public class Event implements Parcelable {
     }
 
     public String getSubtitle() {
-        return startTime + "  " + description;
+        return startTime + "  " + subtitle;
     }
 
 //    public String toJSON() {
@@ -101,7 +102,7 @@ public class Event implements Parcelable {
         dest.writeString(endTime);
         dest.writeString(description);
         dest.writeString(title);
-
+        dest.writeString(subtitle);
     }
 }
 
