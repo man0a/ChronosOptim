@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="title"
+        android:text="@string/title"
         android:id="@+id/title"
         android:layout_below="@+id/empty_bar"
         android:layout_alignParentRight="true"
@@ -24,12 +24,25 @@
         android:layout_alignLeft="@+id/calendar"
         android:layout_alignStart="@+id/calendar" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/subtitle"
+        android:id="@+id/subtitle"
+        android:layout_alignBottom="@+id/date"
+        android:layout_alignLeft="@+id/title"
+        android:layout_alignStart="@+id/title"
+        android:layout_marginLeft="20dp"
+        android:textSize="12dp" />
+
+
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="date"
+        android:text="@string/date"
         android:id="@+id/date"
         android:layout_marginTop="10dp"
         android:gravity="left"
@@ -43,12 +56,9 @@
     android:layout_height="2dp"
     android:background="@color/grey"
     android:id="@+id/view2"
-    android:layout_below="@+id/date"
-    android:layout_alignLeft="@+id/calendar"
-    android:layout_alignStart="@+id/calendar"
-    android:layout_marginTop="27dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp" />
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/calendar"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -69,23 +79,20 @@
         android:background="@color/grey"
         android:id="@+id/view3"
         android:layout_below="@+id/location"
-        android:layout_alignLeft="@+id/calendar"
-        android:layout_alignStart="@+id/calendar"
-        android:layout_marginTop="27dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_alignLeft="@+id/view2"
+        android:layout_alignStart="@+id/view2"
+        android:layout_marginTop="23dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="description"
+        android:text="@string/description"
         android:id="@+id/description"
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="45dp"
         android:layout_below="@+id/view3"
         android:layout_toRightOf="@+id/map"
-        android:layout_alignRight="@+id/view3"
-        android:layout_alignEnd="@+id/view3" />
+        android:layout_toEndOf="@+id/map" />
 
     <ImageView
         android:layout_width="wrap_content"

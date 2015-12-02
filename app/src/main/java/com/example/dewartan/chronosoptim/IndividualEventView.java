@@ -11,10 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 
 public class IndividualEventView extends AppCompatActivity {
     private Toolbar actionBarToolBar;
-    TextView title, location, description, date, toolbarTitle;
+    TextView title, location, description, date, toolbarTitle, subtitle;
     Button deleteButton;
 
 
@@ -29,6 +31,7 @@ public class IndividualEventView extends AppCompatActivity {
         location = (TextView) findViewById(R.id.location);
         description = (TextView) findViewById(R.id.description);
         date = (TextView) findViewById(R.id.date);
+        subtitle = (TextView) findViewById(R.id.subtitle);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.empty_bar);
         setSupportActionBar(actionBarToolBar);
@@ -43,6 +46,7 @@ public class IndividualEventView extends AppCompatActivity {
             location.setText(eventOnDay.getLocation());
             description.setText(eventOnDay.getDescription());
             date.setText(eventOnDay.getDate());
+            subtitle.setText(eventOnDay.subtitle());
         }
 
     }
