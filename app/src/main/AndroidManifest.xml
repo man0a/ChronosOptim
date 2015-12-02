@@ -14,7 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".IndividualEventView">
+        <activity android:name=".DetailActivity">
             <intent-filter>
                 <action android:name="com.example.dewartan.chronosoptim.EventView" />
                 <category android:name="android.intent.category.DEFAULT" />

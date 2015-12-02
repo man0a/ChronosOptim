@@ -3,6 +3,14 @@ package com.example.dewartan.chronosoptim;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by dewartan on 10/20/15.
@@ -48,6 +56,18 @@ public class Event implements Parcelable {
 
     public String getDate() {
         return date;
+    }
+
+    public String getDateDayOfWeek() {
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+        Date temp = null;
+        try {
+            temp = df.parse(date);
+        } catch (ParseException e) {
+
+        }
+        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(temp);
+        return dayOfWeek + ", " + date;
     }
 
     public String getStartTime() {return startTime;}

@@ -1,12 +1,9 @@
 package com.example.dewartan.chronosoptim;
 
-import java.text.*;
 import java.util.*;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,122 +18,68 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     private static EventDBAdapter eventDB;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
-    private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
 
-    private List<String> title_event = new ArrayList<String>();
-    private List<Event> event_info = new ArrayList<Event>();
-    private List<String> dateRange = new ArrayList<String>();
+    private ArrayList<String> titleEvent = new ArrayList<>();
+    private ArrayList<Event> eventInfo = new ArrayList<>();
 
-    private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
 
-    private LayoutInflater mInflater;
-    public int myCliquedPosition;
+    private TreeSet<Integer> sectionHeader = new TreeSet<>();
 
 
     public EventAdapter(Context context) {
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         eventDB = new EventDBAdapter(context);
         initHeaders();
     }
 
     private void initHeaders() {
-        dateRange = getDateRange(); //Grabs the next 90 days
         ArrayList<Event> dbEvents = eventDB.getAllEvents();
-        Event test1 = new Event("Vertica", "Wednesday, Dec 30-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page");
-        Event test2 = new Event("SSC", "Saturday, Dec 12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project");
-        Event test3 = new Event("Shapiro", "Tuesday, Dec 22-2015","11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment" , "Food", "Lunch with Bob");
-        Event test4 = new Event("Cambridge, MA", "Thursday, Dec 24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes " , "Interview", "Interview with Company");
-        Event test5 = new Event("Home", "Friday, Dec 31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay");
+        Event test1 = new Event("Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page");
+        Event test2 = new Event("SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project");
+        Event test3 = new Event("Shapiro", "12-22-2015","11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment" , "Food", "Lunch with Bob");
+        Event test4 = new Event("Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes " , "Interview", "Interview with Company");
+        Event test5 = new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay");
         dbEvents.add(test1);
         dbEvents.add(test2);
         dbEvents.add(test3);
         dbEvents.add(test4);
         dbEvents.add(test5);
 
-        for(String date: dateRange) {
-            boolean header_added = false;
-            for(Event data:dbEvents) {
-                Log.d("Date", date);
+        Calendar cal = new GregorianCalendar();
 
-                if (date.equals(data.getDate()) && !header_added) {
-                    header_added = true;
-                    addSectionHeaderItem(date); //Adds in date
-                    addItem(data);
-                } else if(date.equals(data.getDate())) {
-                    addItem(data);
+        while(EventDate.beforeMax(cal)) {
+
+            boolean headerAdded = false;
+            for(Event event:dbEvents) {
+
+                if (EventDate.matches(cal,event)){
+                    if (!headerAdded) {
+                        headerAdded=true;
+                        addHeader(EventDate.convert(cal)); //Adds in date
+                    }
+                    addItem(event);
                 }
             }
+            cal.add(Calendar.DATE, 1);
         }
     }
 
-
-    private static List<String> getDateRange() {
-
-        List<String> dates = new ArrayList<String>();
-
-        Calendar cal = new GregorianCalendar();
-        cal.add(Calendar.DATE, 90); //Get the next three months
-        String next_month = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
-        String current_date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
-
-        Date first_date = null;
-        Date second_date = null;
-
-        try {
-            first_date = df1.parse(current_date);
-            second_date = df1.parse(next_month);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public void addItem(Event event){
+        if(!EventDate.beforeMax(event)){
+            return;
         }
 
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(first_date);
-
-
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(second_date);
-
-        while (!cal1.after(cal2)) {
-            String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(cal1.getTime());
-            dates.add(dayOfWeek + ", " + (new SimpleDateFormat("MMM dd").format(cal1.getTime())) +"-" + (cal1.get(Calendar.YEAR)) );
-            cal1.add(Calendar.DATE, 1);
-        }
-        return dates;
-    }
-
-    public  void remove(int event) {event_info.remove(event);}
-
-    public  void remove(Event event) {event_info.remove(event);}
-
-    public boolean contains(Event event) {
-        return event_info.contains(event);
-    }
-
-    public void addItem(final Event event) {
-
-        if(dateRange.contains(event.getDate()) && !title_event.contains(event.getDate())) {
-            title_event.add(event.getDate());
-            event_info.add(null); //For spacing
-            sectionHeader.add(title_event.size() - 1);
-            notifyDataSetChanged();
-        } else {
-            title_event.add(event.getTitle());
-            event_info.add(event);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void addSectionHeaderItem(final String item) {
-        title_event.add(item);   //Adds date string
-        event_info.add(null); //For spacing
-        sectionHeader.add(title_event.size() - 1);
+        titleEvent.add(event.getTitle());
+        eventInfo.add(event);
         notifyDataSetChanged();
     }
 
-
-    public int getViewTypeCount() { return TYPE_MAX_COUNT; }
+    public void addHeader(String date) {
+        String header=EventDate.pretty(date);
+        titleEvent.add(header);   //Adds date string
+        eventInfo.add(null); //For spacing
+        sectionHeader.add(titleEvent.size() - 1);
+        notifyDataSetChanged();
+    }
 
     @Override
     public EventAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -154,18 +97,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-            int rowType = getItemViewType(position);
+        int rowType = getItemViewType(position);
         switch (rowType) {
-                case TYPE_ITEM:
-                    holder.textView.setText(title_event.get(position));
-                    Event activity = event_info.get(position);
-                    holder.subView.setText(activity.getSubtitle());
-                    holder.locationView.setText(activity.getLocation());
-                    break;
-                case TYPE_SEPARATOR:
-                    holder.textView.setText(title_event.get(position));
-                    break;
-            }
+            case TYPE_ITEM:
+                holder.textView.setText(titleEvent.get(position));
+                Event activity = eventInfo.get(position);
+                holder.subView.setText(activity.getSubtitle());
+                holder.locationView.setText(activity.getLocation());
+                break;
+            case TYPE_SEPARATOR:
+                holder.textView.setText(titleEvent.get(position));
+                break;
+        }
     }
 
 
@@ -175,7 +118,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     }
 
 
-    public Object getItem(int position) { return event_info.get(position); }
+    public Object getItem(int position) { return eventInfo.get(position); }
 
     @Override
     public long getItemId(int position) {
@@ -184,7 +127,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return title_event.size();
+        return titleEvent.size();
     }
 
 
@@ -208,18 +151,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             Event eventOnDay = (Event) getItem(getPosition());
             if(eventOnDay != null) {
                 final Intent i;
-                i = new Intent(context, IndividualEventView.class);
+                i = new Intent(context, DetailActivity.class);
                 i.putExtra("viewEvent", eventOnDay);
                 context.startActivity(i);
             }
         }
-
-
 
     }
 
 
 
 }
-
-

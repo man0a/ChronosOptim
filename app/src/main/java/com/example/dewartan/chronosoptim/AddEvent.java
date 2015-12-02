@@ -85,28 +85,24 @@ public class AddEvent extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
-                 Date selectedDate =  null;
+                DateFormat df1 = new SimpleDateFormat("MM-dd-yyyy");
+                Date selectedDate =  null;
                 try {
-                     selectedDate = df1.parse(mYear +"-"+ mMonth +"-"+ mDay);
+                     selectedDate = df1.parse(mMonth +"-"+mDay +"-"+ mYear);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
                 Calendar cal1 = Calendar.getInstance();
                 cal1.setTime(selectedDate);
-                String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(cal1.getTime());
-                String monthDay =  new SimpleDateFormat("MMM dd").format(cal1.getTime());
-                String insertDate = dayOfWeek +", "+ monthDay  + "-" + mYear;
-
-                Log.d("Hello", inputDescription.getText().toString());
+                String date = new SimpleDateFormat("MM-dd-yyyy").format(selectedDate);
                 eventDB.insertEvent(
                         inputDescription.getText().toString(),
                         start_time.getText().toString(),
                         inputLocation.getText().toString(),
                         end_time.getText().toString(),
                         inputTitle.getText().toString(),
-                        insertDate,
+                        date,
                         inputSubtitle.getText().toString());
                 setResult(RESULT_OK);
                 finish();
