@@ -52,9 +52,6 @@ public class EventDate {
         return s;
     }
 
-
-
-
     public static String convert(Calendar c){
         return parser.format(c.getTime());
     }

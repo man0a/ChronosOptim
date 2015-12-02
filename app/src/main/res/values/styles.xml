@@ -5,21 +5,20 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <!-- colorPrimary is used for coloring the Toolbar -->
-        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimary">@color/ColorPrimary</item>
 
         <!-- Custom Text color for all Text-->
-        <item name="android:textColor">#FFFF</item>
+        <item name="android:textColor">@color/white</item>
 
-
-
+        <!-- Background Color of App-->
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
         <item name="android:windowBackground">@color/background_black</item>
 
         <!-- colorPrimaryDark is used for coloring the status bar -->
-        <item name="colorPrimaryDark">#122654</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
         <!-- colorAccent is used as the default value for colorControlActivated
              which is used to tint widgets -->
-        <item name="colorAccent">#FFAB40</item>
+        <item name="colorAccent">@color/ColorAccent</item>
     </style>
 
 
@@ -31,13 +30,13 @@
     <!--Custom Tab Text Color when selected-->
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/MyCustomTabText</item>
-        <item name="tabSelectedTextColor">#FFFF</item>
+        <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
     <!--Custom Tab Text Color when unselected-->
     <style name="MyCustomTabText" parent="TextAppearance.AppCompat.Button">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">#FFFF</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 

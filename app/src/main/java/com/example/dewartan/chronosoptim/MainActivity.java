@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-            //
+            //Prevent swipe on headers
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 final int position = viewHolder.getAdapterPosition();
@@ -79,9 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             }
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {return false;}
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
@@ -115,11 +113,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 }
         };
 
+
+
         //Setting the Itemtouch helper to the recyclerView
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
 
+        //Listener for Tabs
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

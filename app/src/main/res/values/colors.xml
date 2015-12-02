@@ -6,8 +6,10 @@
     <color name="blue_grey_800">#37474F</color>
     <color name="blue_grey_900">#263238</color>
     <color name="background_black">#495E8F</color>
+    <color name="white">#FFFF</color>
     <color name="grey">#CCCCCC</color>
     <color name="black">#000000</color>
-    <color name="ColorPrimary">#FF5722</color>
-    <color name="ColorPrimaryDark">#E64A19</color>
+    <color name="ColorPrimary">#3F51B5</color>
+    <color name="ColorPrimaryDark">#122654</color>
+    <color name="ColorAccent">#FFAB40</color>
 </resources>

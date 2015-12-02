@@ -9,6 +9,7 @@
     <string name="create_event">Create Event</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="subtitle">Subtitle</string>
+    <string name="time">Time</string>
 
     <string name="location">Location</string>
     <string name="description">Description</string>
