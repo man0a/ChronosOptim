@@ -56,9 +56,6 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
         holder.subView.setText(activity.getDescription());
     }
 
-
-
-
     public Object getItem(int position) { return feeds.get(position); }
 
     @Override
@@ -86,18 +83,7 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
         }
 
         @Override
-        public void onClick(View v) {
-
-        }
-
-//        @Override
-//        public void onClick(View v) {
-//            final Intent i;
-//            i = new Intent(context, IndividualEventView.class);
-//            Event eventOnDay = (Event) getItem(getPosition());
-//            i.putExtra("viewEvent", eventOnDay);
-//            context.startActivity(i);
-//        }
+        public void onClick(View v) {}
 
     }
 

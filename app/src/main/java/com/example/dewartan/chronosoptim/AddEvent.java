@@ -39,8 +39,6 @@ public class AddEvent extends AppCompatActivity {
     private EventDBAdapter eventDB;
 
     int cur = 0;
-
-
     private TextView start_time, end_time, calendarDate, toolbarTitle;
     private EditText inputTitle, inputLocation, inputDescription, inputSubtitle;
 
@@ -95,7 +93,6 @@ public class AddEvent extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
                 Calendar cal1 = Calendar.getInstance();
                 cal1.setTime(selectedDate);
                 String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(cal1.getTime());
@@ -109,8 +106,8 @@ public class AddEvent extends AppCompatActivity {
                         inputLocation.getText().toString(),
                         end_time.getText().toString(),
                         inputTitle.getText().toString(),
-                        inputSubtitle.getText().toString(),
-                        insertDate);
+                        insertDate,
+                        inputSubtitle.getText().toString());
                 setResult(RESULT_OK);
                 finish();
             }

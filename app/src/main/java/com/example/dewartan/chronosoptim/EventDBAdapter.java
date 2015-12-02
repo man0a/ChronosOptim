@@ -22,7 +22,6 @@ public class EventDBAdapter extends SQLiteOpenHelper {
     public static final String EVENT_COLUMN_STARTTIME= "starttime";
     public static final String EVENT_COLUMN_ENDTIME = "endtime";
     public static final String EVENT_COLUMN_LOCATION = "location";
-
     public static final String EVENT_COLUMN_SUBTITLE = "subtitle";
 
 
@@ -62,7 +61,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         contentValues.put("starttime", starttime);
         contentValues.put("endtime", endtime);
         contentValues.put("location", location);
-        contentValues.put("subttitle", subtitle);
+        contentValues.put("subtitle", subtitle);
         db.insert("event", null, contentValues);
         return true;
     }
@@ -103,8 +102,6 @@ public class EventDBAdapter extends SQLiteOpenHelper {
     public ArrayList<Event> getAllEvents()
     {
         ArrayList<Event> array_list = new ArrayList<>();
-
-        //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from event", null );
         res.moveToFirst();

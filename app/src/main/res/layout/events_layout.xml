@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="30dp" />
+
     </LinearLayout>
     <TextView
         android:id="@+id/location"

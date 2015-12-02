@@ -18,7 +18,6 @@ public class Event implements Parcelable {
         this.endTime = endTime;
         this.description = description;
         this.title = title;
-
     }
 
     protected Event(Parcel in) {
@@ -28,6 +27,7 @@ public class Event implements Parcelable {
         this.endTime = in.readString();
         this.description = in.readString();
         this.title = in.readString();
+        this.subtitle = in.readString();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -46,24 +46,6 @@ public class Event implements Parcelable {
         return title;
     }
 
-    public void changeDescription(String description) {
-        this.description = description;
-    }
-
-
-    public void changeDate(String date) {
-        this.date = date;
-    }
-
-
-
-
-    public void changeLocation(String location) {
-        this.location = location;
-    }
-
-
-
     public String getDate() {
         return date;
     }
@@ -80,13 +62,16 @@ public class Event implements Parcelable {
         return startTime + "  " + subtitle;
     }
 
+    public String subtitle() {return subtitle;}
+
 //    public String toJSON() {
 //        return
 //                "{location:\'" + getLocation() +
 //                "\',title:\'"+ getTitle() +
 //                "\',time:\'" +getTime()+
 //                "\',date:\'"+ getDate()+
-//                "\',description:\'"+ getDescription()+"}";
+//                "\',description:\'"+ getDescription()+
+//                 "\',subtitle:\'"+ subtitle()"}";
 //    }
 
     @Override

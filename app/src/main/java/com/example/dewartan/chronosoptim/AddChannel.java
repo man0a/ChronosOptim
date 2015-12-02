@@ -31,11 +31,9 @@ public class AddChannel extends AppCompatActivity {
         toolbarTitle.setText("Add Channel");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        getSupportActionBar().setDisplayShowTitleEnabled(false); //Added a text view in toolbar so I can manipulate app
 
         channelDB = new ChannelDBAdapter(this);
-
 
         mName = (EditText) findViewById(R.id.input_channel_name);
         mDescription = (EditText) findViewById(R.id.input_description);
@@ -54,7 +52,6 @@ public class AddChannel extends AppCompatActivity {
                 finish();
             }
         });
-
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
