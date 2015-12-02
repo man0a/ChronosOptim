@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class EventDBAdapter extends SQLiteOpenHelper {
 
@@ -23,7 +24,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
     public static final String EVENT_COLUMN_ENDTIME = "endtime";
     public static final String EVENT_COLUMN_LOCATION = "location";
     public static final String EVENT_COLUMN_SUBTITLE = "subtitle";
-
+    public static String rowID = "";
 
 
     public EventDBAdapter(Context context)
@@ -49,6 +50,23 @@ public class EventDBAdapter extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String clearDBQuery = "DELETE FROM "+ EVENT_TABLE_NAME;
         db.execSQL(clearDBQuery);
+    }
+
+    public String getRowid(String title) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * from " + EVENT_TABLE_NAME + " WHERE title = ?" , new String[] { title });
+        if (c.moveToFirst()){
+            long temp;
+            temp = c.getLong(c.getColumnIndex(EVENT_COLUMN_ID));
+            rowID = String.valueOf(temp);
+            Log.i("----_ROW ID = ", rowID);
+        }else  if (!c.moveToFirst())
+            Log.i("CURSOR ERROR", " CURSOR INDEX MOST LIKELY 0");
+        else
+            c.moveToFirst();
+
+        return rowID;
     }
 
     public boolean insertEvent(String description, String starttime, String location, String endtime, String title, String eventdate, String subtitle)

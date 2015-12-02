@@ -4,6 +4,7 @@ import java.text.*;
 import java.util.*;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -105,6 +106,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         return dates;
     }
 
+    public  void remove(int event) {event_info.remove(event);}
+
+    public  void remove(Event event) {event_info.remove(event);}
 
     public boolean contains(Event event) {
         return event_info.contains(event);
@@ -209,6 +213,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 context.startActivity(i);
             }
         }
+
+
 
     }
 

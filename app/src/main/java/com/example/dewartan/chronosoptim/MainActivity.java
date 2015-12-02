@@ -3,28 +3,31 @@ package com.example.dewartan.chronosoptim;
 
 
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, View.OnClickListener, ActionMode.Callback {
+public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
 
     private EventDBAdapter eventDBAdapter;
     private ChannelDBAdapter channelDBAdapter;
-    private static EventAdapter adapter;
+    private EventAdapter adapter;
     private ChannelAdapter cAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     int add_event_code = 1;
     int add_channel_code = 2;
     private TextView title;
+    private ItemTouchHelper itemTouchHelper;
+    private Context context= this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,53 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
         recyclerView.setAdapter(adapter);
 
+        ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //Remove swiped item from list and notify the RecyclerView
+
+                final int position = viewHolder.getAdapterPosition();
+                if (adapter.getItem(position) != null) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                    alertDialogBuilder.setMessage("Are you sure that you want to remove it?");
+
+                    //When the user selects remove
+                    alertDialogBuilder.setPositiveButton("remove", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Event event = (Event) adapter.getItem(position);
+                            String id = eventDBAdapter.getRowid(event.getTitle());
+                            eventDBAdapter.deleteEvent(Integer.parseInt(id));
+                            adapter = new EventAdapter(context);
+                            recyclerView.setAdapter(adapter);
+                        }
+                    });
+
+                    // When the user selects cancel
+                    alertDialogBuilder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearView(recyclerView, viewHolder);
+                        }
+                    });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+                }
+            }
+        };
+
+        //Setting the Itemtouch helper to the recyclerView
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -81,13 +133,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
@@ -140,26 +189,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         }
     }
 
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {}
-
-    @Override
-    public void onClick(View v) {}
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {

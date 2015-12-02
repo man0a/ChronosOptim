@@ -6,18 +6,24 @@ package com.example.dewartan.chronosoptim;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class IndividualEventView extends AppCompatActivity {
     private Toolbar actionBarToolBar;
     TextView title, location, description, date, toolbarTitle, subtitle, time;
+    Button delete;
 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.individual_event);
+
+        final EventDBAdapter eventDBAdapter = new EventDBAdapter(this);
 
         //Get the Object
         Event eventOnDay = this.getIntent().getParcelableExtra("viewEvent");
@@ -28,6 +34,9 @@ public class IndividualEventView extends AppCompatActivity {
         date = (TextView) findViewById(R.id.date);
         subtitle = (TextView) findViewById(R.id.subtitle);
         time = (TextView) findViewById(R.id.time);
+
+        //Delete Button
+        delete = (Button) findViewById(R.id.delete);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.empty_bar);
         setSupportActionBar(actionBarToolBar);
@@ -45,7 +54,7 @@ public class IndividualEventView extends AppCompatActivity {
             subtitle.setText(eventOnDay.subtitle());
             time.setText(eventOnDay.getStartTime()+"-"+eventOnDay.getEndTime());
         }
-
+        
     }
 
     @Override
