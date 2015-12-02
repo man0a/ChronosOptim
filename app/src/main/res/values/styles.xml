@@ -6,9 +6,15 @@
         <item name="windowNoTitle">true</item>
         <!-- colorPrimary is used for coloring the Toolbar -->
         <item name="colorPrimary">#3F51B5</item>
+
+        <!-- Custom Text color for all Text-->
         <item name="android:textColor">#FFFF</item>
+
+
+
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
         <item name="android:windowBackground">@color/background_black</item>
+
         <!-- colorPrimaryDark is used for coloring the status bar -->
         <item name="colorPrimaryDark">#122654</item>
         <!-- colorAccent is used as the default value for colorControlActivated
@@ -17,27 +23,29 @@
     </style>
 
 
+    <!-- Custom text color of menu-->
     <style name="TextAppearance">
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <!--Custom Tab Text Color when selected-->
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/MyCustomTabText</item>
         <item name="tabSelectedTextColor">#FFFF</item>
     </style>
 
+    <!--Custom Tab Text Color when unselected-->
     <style name="MyCustomTabText" parent="TextAppearance.AppCompat.Button">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">#FFFF</item>
     </style>
 
 
-
-
     <!-- Dark Buttons -->
     <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorButtonNormal">@color/blue_grey_500</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 

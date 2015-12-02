@@ -22,7 +22,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     private ArrayList<String> titleEvent = new ArrayList<>();
     private ArrayList<Event> eventInfo = new ArrayList<>();
 
-
     private TreeSet<Integer> sectionHeader = new TreeSet<>();
 
 
@@ -152,7 +151,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             if(eventOnDay != null) {
                 final Intent i;
                 i = new Intent(context, DetailActivity.class);
-                i.putExtra("viewEvent", eventOnDay);
+                i.putExtra("viewEvent", eventOnDay); //Places the object into the key value pair
                 context.startActivity(i);
             }
         }

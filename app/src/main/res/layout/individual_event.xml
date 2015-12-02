@@ -22,7 +22,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="20dp"
         android:layout_alignLeft="@+id/calendar"
-        android:layout_alignStart="@+id/calendar" />
+        android:layout_alignStart="@+id/calendar"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -126,15 +127,5 @@
         android:layout_alignBottom="@+id/location"
         android:layout_alignLeft="@+id/calendar"
         android:layout_alignStart="@+id/calendar" />
-
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="@string/delete"
-        android:id="@+id/delete"
-        android:background="@android:color/holo_red_dark"
-        android:layout_marginBottom="57dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

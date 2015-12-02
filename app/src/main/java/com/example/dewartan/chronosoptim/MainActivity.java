@@ -1,8 +1,5 @@
 package com.example.dewartan.chronosoptim;
 
-
-
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -73,6 +69,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            //
+            @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                final int position = viewHolder.getAdapterPosition();
+                if (adapter.getItem(position) == null) return 0;
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -83,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 //Remove swiped item from list and notify the RecyclerView
 
                 final int position = viewHolder.getAdapterPosition();
-                if (adapter.getItem(position) != null) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                     alertDialogBuilder.setMessage("Are you sure that you want to remove it?");
 
@@ -106,12 +110,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                             clearView(recyclerView, viewHolder);
                         }
                     });
-
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
-
                 }
-            }
         };
 
         //Setting the Itemtouch helper to the recyclerView
@@ -188,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             }
         }
     }
-
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
