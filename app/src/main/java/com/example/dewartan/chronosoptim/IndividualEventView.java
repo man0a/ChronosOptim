@@ -7,17 +7,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-
 public class IndividualEventView extends AppCompatActivity {
     private Toolbar actionBarToolBar;
-    TextView title, location, description, date, toolbarTitle, subtitle;
-    Button deleteButton;
+    TextView title, location, description, date, toolbarTitle, subtitle, time;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +27,7 @@ public class IndividualEventView extends AppCompatActivity {
         description = (TextView) findViewById(R.id.description);
         date = (TextView) findViewById(R.id.date);
         subtitle = (TextView) findViewById(R.id.subtitle);
+        time = (TextView) findViewById(R.id.time);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.empty_bar);
         setSupportActionBar(actionBarToolBar);
@@ -47,6 +43,7 @@ public class IndividualEventView extends AppCompatActivity {
             description.setText(eventOnDay.getDescription());
             date.setText(eventOnDay.getDate());
             subtitle.setText(eventOnDay.subtitle());
+            time.setText(eventOnDay.getStartTime()+"-"+eventOnDay.getEndTime());
         }
 
     }

@@ -50,6 +50,10 @@ public class Event implements Parcelable {
         return date;
     }
 
+    public String getStartTime() {return startTime;}
+
+    public String getEndTime(){return endTime;}
+
     public String getLocation() {
         return location;
     }

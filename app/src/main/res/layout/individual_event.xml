@@ -51,12 +51,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="80dp" />
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="time"
+        android:id="@+id/time"
+        android:layout_marginTop="35dp"
+        android:gravity="left"
+        android:textAlignment="gravity"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="80dp" />
+
     <View
     android:layout_width="350dp"
     android:layout_height="2dp"
     android:background="@color/grey"
     android:id="@+id/view2"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="35dp"
         android:layout_below="@+id/calendar"
         android:layout_centerHorizontal="true" />
 
@@ -66,7 +80,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="location"
         android:id="@+id/location"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
         android:layout_below="@+id/view2"
         android:layout_alignLeft="@+id/date"
         android:layout_alignStart="@+id/date"

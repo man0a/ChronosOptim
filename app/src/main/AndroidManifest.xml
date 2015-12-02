@@ -14,15 +14,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity android:name=".IndividualEventView">
             <intent-filter>
                 <action android:name="com.example.dewartan.chronosoptim.EventView" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity android:name=".AddEvent"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
@@ -30,8 +27,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-
         <activity android:name=".AddChannel">
             <intent-filter>
                 <action android:name="com.example.dewartan.chronosoptim.AddChannel" />
