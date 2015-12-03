@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     private LinearLayoutManager mLayoutManager;
     private Toolbar actionBarToolBar;
 //    private Button feedBtn, eventBtn;
-    int add_event_code = 1;
-    int add_team_code = 2;
+    public static final int add_event_code = 1;
+    public static final int add_team_code = 2;
     private TextView title;
 //    private ItemTouchHelper itemTouchHelper;
     private Context context= this;
@@ -159,13 +159,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             startActivityForResult(new Intent(this, AddTeamActivity.class), add_team_code);
             return true;
         }
-        if(id == R.id.clearDatabase) {
-            dbHelper.clear();
-            cAdapter = new TeamListAdapter(this);
-            adapter = new EventListAdapter(this);
-            recyclerView.setAdapter(adapter);
-            return true;
-        }
+//        if(id == R.id.clearDatabase) {
+//            dbHelper.clear();
+//            cAdapter = new TeamListAdapter(this);
+//            adapter = new EventListAdapter(this);
+//            recyclerView.setAdapter(adapter);
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -173,14 +173,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         if(resultCode!=RESULT_OK){
             return;
         }
-        Toast.makeText(getBaseContext(), "Successfully added", Toast.LENGTH_SHORT).show();
-
-        if (requestCode == add_event_code) {
-            adapter = new EventListAdapter(this);
-            recyclerView.setAdapter(adapter);
-        }else if(requestCode == add_team_code) {
-            cAdapter = new TeamListAdapter(this);
-            recyclerView.setAdapter(cAdapter);
+//        Toast.makeText(getBaseContext(), "Successfully added", Toast.LENGTH_SHORT).show();
+        switch(requestCode){
+            case add_event_code:
+                Event event=data.getExtras().getParcelable("eventObj");
+                adapter.append(event);
+                break;
+            case add_team_code: break;
+//            case clear database
         }
     }
 

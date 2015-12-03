@@ -4,6 +4,7 @@ import java.util.*;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +20,24 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
 
-    private ArrayList<String> titleEvent = new ArrayList<>();
-    private ArrayList<Event> events = new ArrayList<>();
-    private TreeSet<Integer> sectionHeader = new TreeSet<>();
+    private ArrayList<String> titleEvent;
+    private ArrayList<Event> events;
+    private TreeSet<Integer> sectionHeader;
 
+    private ArrayList<Event> dbEvents;
 
     public EventListAdapter(Context context) {
         eventDB = new DbHelper(context);
+        dbEvents = eventDB.pull();
         initHeaders();
     }
 
     private void initHeaders() {
-        ArrayList<Event> dbEvents = eventDB.pull();
-
         // generate list of headers and events
+
+        titleEvent=new ArrayList<>();
+        events=new ArrayList<>();
+        sectionHeader=new TreeSet<>();
         Calendar cal = new GregorianCalendar();
         while(EventDate.beforeMax(cal)) {
 
@@ -44,14 +49,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                         headerAdded=true;
                         addHeader(EventDate.format(cal));// Saturday, 11/11
                     }
-                    addItem(event);
+                    addEvent(event);
                 }
             }
             cal.add(Calendar.DATE, 1);
         }
     }
 
-    public void addItem(Event event){
+    public void addEvent(Event event){
         if(!EventDate.beforeMax(event)){
             return;
         }
@@ -67,6 +72,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         events.add(null); //For spacing
         sectionHeader.add(titleEvent.size() - 1);
         notifyDataSetChanged();
+    }
+
+    public void append(Event event){
+        if(!EventDate.beforeMax(event)){
+            return;
+        }
+
+        dbEvents.add(event);
+        initHeaders();
     }
 
     @Override

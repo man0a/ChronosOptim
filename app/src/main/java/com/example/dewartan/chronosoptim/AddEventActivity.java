@@ -33,7 +33,6 @@ public class AddEventActivity extends AppCompatActivity {
     static final int TIME_DIALOG_ID = 1;
     static final int TIME_DIALOG_ID2 = 2;
     static final int DATE_DIALOG = 3;
-    private DbHelper eventDB;
 
     int cur = 0;
     private TextView start_time, end_time, calendarDate, toolbarTitle;
@@ -45,8 +44,6 @@ public class AddEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event);
-
-        eventDB = new DbHelper(this);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
@@ -68,23 +65,27 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     public void cancel(View v) {
+        setResult(RESULT_CANCELED,null);
         finish();
     }
 
     public void save(View v){
-        Date selectedDate=EventDate.parse(mMonth +"-"+mDay +"-"+ mYear);
+        Date selectedDate=EventDate.parse(mMonth + "-" + mDay + "-" + mYear);
 
 //        Calendar cal1 = Calendar.getInstance();
 //        cal1.setTime(selectedDate);
-        Event event=new Event(inputDescription.getText().toString(),
-                start_time.getText().toString(),
+        Event event=new Event(
                 inputLocation.getText().toString(),
-                end_time.getText().toString(),
-                inputTitle.getText().toString(),
                 EventDate.format(selectedDate),
+                start_time.getText().toString(),
+                end_time.getText().toString(),
+                inputDescription.getText().toString(),
+                inputTitle.getText().toString(),
                 inputSubtitle.getText().toString());
-        eventDB.insert(event);
-        setResult(RESULT_OK);
+//        eventDB.insert(event);
+        Intent backIntent = new Intent();
+        backIntent.putExtra("eventObj",event);
+        setResult(RESULT_OK, backIntent);
         finish();
     }
 
