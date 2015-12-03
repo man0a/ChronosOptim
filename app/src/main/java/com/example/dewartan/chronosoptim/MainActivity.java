@@ -21,18 +21,14 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
 
-    private DbHelper dbHelper;
     private EventListAdapter adapter;
     private TeamListAdapter cAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private Toolbar actionBarToolBar;
-//    private Button feedBtn, eventBtn;
     public static final int add_event_code = 1;
     public static final int add_team_code = 2;
     private TextView title;
-//    private ItemTouchHelper itemTouchHelper;
-    private Context context= this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         //RecyclerView Adapters
         adapter = new EventListAdapter(this);
         cAdapter = new TeamListAdapter(this);
-        dbHelper = new DbHelper(this);
-
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -82,31 +76,28 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 //Remove swiped item from list and notify the RecyclerView
 
                 final int position = viewHolder.getAdapterPosition();
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                    alertDialogBuilder.setMessage("Are you sure that you want to remove it?");
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertDialogBuilder.setMessage("Are you sure that you want to remove it?");
 
-                    //When the user selects remove
-                    alertDialogBuilder.setPositiveButton("remove", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-//                            Event event = (Event) adapter.getItem(position);
-//                            String id=dbHelper.getRowid(event.getTitle());
-//                            dbHelper.deleteEvent(Integer.parseInt(id));
-//                            adapter = new EventListAdapter(context);
-//                            recyclerView.setAdapter(adapter);
-                        }
-                    });
+                //When the user selects remove
+                alertDialogBuilder.setPositiveButton("remove", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Event event=(Event)((EventListAdapter.ViewHolder)viewHolder).textView.getTag();
+                        adapter.remove(event);
+                    }
+                });
 
-                    // When the user selects cancel
-                    alertDialogBuilder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            clearView(recyclerView, viewHolder);
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-                }
+                // When the user selects cancel
+                alertDialogBuilder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clearView(recyclerView, viewHolder);
+                    }
+                });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
         };
 
 
@@ -173,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         if(resultCode!=RESULT_OK){
             return;
         }
-//        Toast.makeText(getBaseContext(), "Successfully added", Toast.LENGTH_SHORT).show();
         switch(requestCode){
             case add_event_code:
                 Event event=data.getExtras().getParcelable("eventObj");

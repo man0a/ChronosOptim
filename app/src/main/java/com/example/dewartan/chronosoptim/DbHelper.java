@@ -49,20 +49,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM "+ TEAM_TABLE_NAME);
     }
 
-//    public String getRowid(String title) {
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        Cursor c = db.rawQuery("SELECT * from " + EVENT_TABLE_NAME + " WHERE title = ?" , new String[] { title });
-//        if (c.moveToFirst()){
-//            long temp;
-//            temp = c.getLong(c.getColumnIndex(EVENT_COLUMN_ID));
-//            rowID = String.valueOf(temp);
-//        }else {
-//            c.moveToFirst();
-//        }
-//        return rowID;
-//    }
-
     public void insert(Event event){
         insert(getWritableDatabase(),event);
     }
@@ -76,37 +62,26 @@ public class DbHelper extends SQLiteOpenHelper {
         db.insert("team", null, team.content());
     }
 
+    public void delete (Event e){
+        // _id,title,description,eventdate,starttime,endtime,location,subtitle
+        SQLiteDatabase db=getWritableDatabase();
+        String where=EVENT_COLUMNS[1]+"='"+e.getTitle()+"' AND "+
+                EVENT_COLUMNS[2]+"='"+e.getDescription()+"' AND "+
+                EVENT_COLUMNS[3]+"='"+e.getDate()+"' AND "+
+                EVENT_COLUMNS[4]+"='"+e.getStartTime()+"' AND "+
+                EVENT_COLUMNS[5]+"='"+e.getEndTime()+"' AND "+
+                EVENT_COLUMNS[6]+"='"+e.getLocation()+"' AND "+
+                EVENT_COLUMNS[7]+"='"+e.getSubtitle()+"'";
 
-//    public Cursor getData(int id){
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor res =  db.rawQuery( "select * from event where id="+id+"", null );
-//        return res;
-//    }
+        Log.w("shit",where);
 
-//    public int numberOfRows(){
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        int numRows = (int) DatabaseUtils.queryNumEntries(db, EVENT_TABLE_NAME);
-//        return numRows;
-//    }
 
-//    public boolean updateEvent (Integer id, String description, String starttime, String location, String endtime, String title, String eventdate, String subtitle)
-//    {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put("title", title);
-//        contentValues.put("description", description);
-//        contentValues.put("eventdate", eventdate);
-//        contentValues.put("starttime", starttime);
-//        contentValues.put("endtime", endtime);
-//        contentValues.put("location", location);
-//        contentValues.put("subtitle", subtitle);
-//        db.update("event", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
-//        return true;
-//    }
-
-    public Integer delete (int id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("event", "id = ? ", new String[] { Integer.toString(id) });
+        // which, where, whereArgs, groupBy, having, orderBy, limit
+        Cursor cursor = db.query(EVENT_TABLE_NAME, new String[]{"rowid"}, where, null, null, null, null, "1");
+        if(cursor.moveToFirst()){
+            int rowid=cursor.getInt(0);
+            db.delete(EVENT_TABLE_NAME, "rowid=" + rowid, null);
+        }
     }
 
     public ArrayList<Event> pull(){

@@ -85,8 +85,13 @@ public class Event implements Parcelable {
     }
 
     public String getSubtitle() {
+        return subtitle;
+    }
+
+    public String getSubtext() {
         return startTime + "  " + subtitle;
     }
+
 
     public String subtitle() {return subtitle;}
 

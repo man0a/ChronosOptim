@@ -82,7 +82,7 @@ public class AddEventActivity extends AppCompatActivity {
                 inputDescription.getText().toString(),
                 inputTitle.getText().toString(),
                 inputSubtitle.getText().toString());
-//        eventDB.insert(event);
+//        dbHelper.insert(event);
         Intent backIntent = new Intent();
         backIntent.putExtra("eventObj",event);
         setResult(RESULT_OK, backIntent);

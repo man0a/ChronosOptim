@@ -16,7 +16,7 @@ import android.widget.TextView;
  */
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
 
-    private static DbHelper eventDB;
+    private static DbHelper dbHelper;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
 
@@ -27,8 +27,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     private ArrayList<Event> dbEvents;
 
     public EventListAdapter(Context context) {
-        eventDB = new DbHelper(context);
-        dbEvents = eventDB.pull();
+        dbHelper = new DbHelper(context);
+        dbEvents = dbHelper.pull();
         initHeaders();
     }
 
@@ -75,11 +75,20 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     }
 
     public void append(Event event){
+        dbHelper.insert(event);
         if(!EventDate.beforeMax(event)){
             return;
         }
-
         dbEvents.add(event);
+        initHeaders();
+    }
+
+    public void remove(Event event){
+        dbHelper.delete(event);
+        if(!EventDate.beforeMax(event)){
+            return;
+        }
+        dbEvents.remove(event);
         initHeaders();
     }
 
@@ -103,9 +112,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         switch (rowType) {
             case TYPE_ITEM:
                 holder.textView.setText(titleEvent.get(position));
-                Event activity = events.get(position);
-                holder.subView.setText(activity.getSubtitle());
-                holder.locationView.setText(activity.getLocation());
+                Event event = events.get(position);
+                holder.subView.setText(event.getSubtext());
+                holder.locationView.setText(event.getLocation());
+                holder.textView.setTag(event);
                 break;
             case TYPE_SEPARATOR:
                 holder.textView.setText(titleEvent.get(position));
