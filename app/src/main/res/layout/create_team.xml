@@ -37,16 +37,16 @@
             android:paddingTop="60dp">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_channel_name"
+                android:id="@+id/input_layout_Team_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_channel_name"
+                    android:id="@+id/input_Team_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:hint="@string/channel_name" />
+                    android:hint="@string/team_name" />
             </android.support.design.widget.TextInputLayout>
 
 

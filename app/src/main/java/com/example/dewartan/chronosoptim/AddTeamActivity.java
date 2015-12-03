@@ -12,28 +12,28 @@ import android.widget.TextView;
 /**
  * Created by dewartan on 11/21/15.
  */
-public class AddChannel extends AppCompatActivity {
+public class AddTeamActivity extends AppCompatActivity {
 
     private TextView toolbarTitle;
-    private ChannelDBAdapter channelDB;
+    private TeamDbHelper teamDB;
     private Button cancel, save;
     private EditText mDescription, mName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_channel);
+        setContentView(R.layout.create_team);
         Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
         toolbarTitle = (TextView) actionBarToolBar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("Add Channel");
+        toolbarTitle.setText("Add Team");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false); //Added a text view in toolbar so I can manipulate app
 
-        channelDB = new ChannelDBAdapter(this);
+        teamDB = new TeamDbHelper(this);
 
-        mName = (EditText) findViewById(R.id.input_channel_name);
+        mName = (EditText) findViewById(R.id.input_Team_name);
         mDescription = (EditText) findViewById(R.id.input_description);
 
         cancel = (Button) findViewById(R.id.cancel);
@@ -42,7 +42,7 @@ public class AddChannel extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                channelDB.insertChannel(
+                teamDB.insertTeam(
                         mName.getText().toString(),
                         mDescription.getText().toString()
                 );

@@ -13,9 +13,9 @@ import android.widget.TextView;
 /**
  * Created by dewartan on 10/20/15.
  */
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
+public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
 
-    private static EventDBAdapter eventDB;
+    private static EventDbHelper eventDB;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
 
@@ -25,8 +25,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     private TreeSet<Integer> sectionHeader = new TreeSet<>();
 
 
-    public EventAdapter(Context context) {
-        eventDB = new EventDBAdapter(context);
+    public EventListAdapter(Context context) {
+        eventDB = new EventDbHelper(context);
         initHeaders();
     }
 
@@ -81,7 +81,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     }
 
     @Override
-    public EventAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EventListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = null;
         switch (viewType) {
             case TYPE_ITEM:

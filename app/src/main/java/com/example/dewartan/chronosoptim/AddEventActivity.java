@@ -26,7 +26,7 @@ import java.util.Locale;
 /**
  * Created by dewartan on 11/21/15.
  */
-public class AddEvent extends AppCompatActivity {
+public class AddEventActivity extends AppCompatActivity {
 
     private String saveTime, saveDate;
 
@@ -36,7 +36,7 @@ public class AddEvent extends AppCompatActivity {
     static final int TIME_DIALOG_ID = 1;
     static final int TIME_DIALOG_ID2 = 2;
     static final int DATE_DIALOG = 3;
-    private EventDBAdapter eventDB;
+    private EventDbHelper eventDB;
 
     int cur = 0;
     private TextView start_time, end_time, calendarDate, toolbarTitle;
@@ -49,7 +49,7 @@ public class AddEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event);
 
-        eventDB = new EventDBAdapter(this);
+        eventDB = new EventDbHelper(this);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);

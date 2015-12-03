@@ -16,20 +16,20 @@
         </activity>
         <activity android:name=".DetailActivity">
             <intent-filter>
-                <action android:name="com.example.dewartan.chronosoptim.EventView" />
+                <action android:name="com.example.dewartan.chronosoptim.DetailActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddEvent"
+        <activity android:name=".AddEventActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
-                <action android:name="com.example.dewartan.chronosoptim.AddEvent" />
+                <action android:name="com.example.dewartan.chronosoptim.AddEventActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddChannel">
+        <activity android:name=".AddTeamActivity">
             <intent-filter>
-                <action android:name="com.example.dewartan.chronosoptim.AddChannel" />
+                <action android:name="com.example.dewartan.chronosoptim.AddTeamActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

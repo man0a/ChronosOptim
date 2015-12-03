@@ -1,57 +1,53 @@
 package com.example.dewartan.chronosoptim;
 
-import java.text.*;
 import java.util.*;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 
 /**
  * Created by dewartan on 10/20/15.
  */
-public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHolder> {
+public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHolder> {
 
-    private List<Channel> feeds = new ArrayList<Channel>();
-    private ChannelDBAdapter channelDB;
+    private List<Team> feeds = new ArrayList<Team>();
+    private TeamDbHelper TeamDB;
     private LayoutInflater mInflater;
 
-    public ChannelAdapter(Context context) {
+    public TeamListAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        channelDB = new ChannelDBAdapter(context);
+        TeamDB = new TeamDbHelper(context);
         initHeaders();
     }
 
     private void initHeaders() {
-        ArrayList<Channel> allChannels = channelDB.getAllChannels();
-        Channel test1 = new Channel("Data Structures", "Cosi 21a Class");
-        Channel test2 = new Channel("Chess Club", "For all those whom love chess");
-        Channel test3 = new Channel("Lacrosse Events", "Sporting events concerning Brandeis Lacrosse");
-        Channel test4 = new Channel("Patriots Fan Club", "New England Patriots Fan Club");
-        Channel test5 = new Channel("Ultimate Frisbee Pickup", "Pickup games for Ultimate Frisbee");
-        allChannels.add(test1);
-        allChannels.add(test2);
-        allChannels.add(test3);
-        allChannels.add(test4);
-        allChannels.add(test5);
-        this.feeds = allChannels;
+        ArrayList<Team> allTeams = TeamDB.getAllTeams();
+        Team test1 = new Team("Data Structures", "Cosi 21a Class");
+        Team test2 = new Team("Chess Club", "For all those whom love chess");
+        Team test3 = new Team("Lacrosse Events", "Sporting events concerning Brandeis Lacrosse");
+        Team test4 = new Team("Patriots Fan Club", "New England Patriots Fan Club");
+        Team test5 = new Team("Ultimate Frisbee Pickup", "Pickup games for Ultimate Frisbee");
+        allTeams.add(test1);
+        allTeams.add(test2);
+        allTeams.add(test3);
+        allTeams.add(test4);
+        allTeams.add(test5);
+        this.feeds = allTeams;
     }
 
     @Override
-    public ChannelAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.channel_view, parent, false);
+    public TeamListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_view, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Channel activity = feeds.get(position);
+        Team activity = feeds.get(position);
         holder.textView.setText(activity.getName());
         holder.subView.setText(activity.getDescription());
     }

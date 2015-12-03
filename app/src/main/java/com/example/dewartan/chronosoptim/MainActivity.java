@@ -21,16 +21,16 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
 
-    private EventDBAdapter eventDBAdapter;
-    private ChannelDBAdapter channelDBAdapter;
-    private EventAdapter adapter;
-    private ChannelAdapter cAdapter;
+    private EventDbHelper eventDbHelper;
+    private TeamDbHelper teamDbHelper;
+    private EventListAdapter adapter;
+    private TeamListAdapter cAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private Toolbar actionBarToolBar;
     private Button feedBtn, eventBtn;
     int add_event_code = 1;
-    int add_channel_code = 2;
+    int add_team_code = 2;
     private TextView title;
     private ItemTouchHelper itemTouchHelper;
     private Context context= this;
@@ -56,15 +56,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         //Setup the tabs
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabanim_tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
-        tabLayout.addTab(tabLayout.newTab().setText("Channels"));
+        tabLayout.addTab(tabLayout.newTab().setText("Teams"));
 
         //RecyclerView Adapters
-        adapter = new EventAdapter(this);
-        cAdapter = new ChannelAdapter(this);
+        adapter = new EventListAdapter(this);
+        cAdapter = new TeamListAdapter(this);
 
         //Database Adapters
-        eventDBAdapter = new EventDBAdapter(this);
-        channelDBAdapter = new ChannelDBAdapter(this);
+        eventDbHelper = new EventDbHelper(this);
+        teamDbHelper = new TeamDbHelper(this);
 
         recyclerView.setAdapter(adapter);
 
@@ -94,9 +94,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                             Event event = (Event) adapter.getItem(position);
-                            String id = eventDBAdapter.getRowid(event.getTitle());
-                            eventDBAdapter.deleteEvent(Integer.parseInt(id));
-                            adapter = new EventAdapter(context);
+                            String id = eventDbHelper.getRowid(event.getTitle());
+                            eventDbHelper.deleteEvent(Integer.parseInt(id));
+                            adapter = new EventListAdapter(context);
                             recyclerView.setAdapter(adapter);
                         }
                     });
@@ -155,19 +155,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if(id == R.id.create_event) {
-            startActivityForResult(new Intent(this, AddEvent.class), add_event_code);
+        if(id == R.id.createEvent) {
+            startActivityForResult(new Intent(this, AddEventActivity.class), add_event_code);
             return true;
         }
-        if(id == R.id.create_channel) {
-            startActivityForResult(new Intent(this, AddChannel.class), add_channel_code);
+        if(id == R.id.createTeam) {
+            startActivityForResult(new Intent(this, AddTeamActivity.class), add_team_code);
             return true;
         }
-        if(id == R.id.clear_database) {
-            eventDBAdapter.clearDatabase();
-            channelDBAdapter.clearDatabase();
-            cAdapter = new ChannelAdapter(this);
-            adapter = new EventAdapter(this);
+        if(id == R.id.clearDatabase) {
+            eventDbHelper.clearDatabase();
+            teamDbHelper.clearDatabase();
+            cAdapter = new TeamListAdapter(this);
+            adapter = new EventListAdapter(this);
             recyclerView.setAdapter(adapter);
             return true;
         }
@@ -175,19 +175,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == add_event_code) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(getBaseContext(), "Successfully added", Toast.LENGTH_SHORT).show();
-                adapter = new EventAdapter(this);
-                recyclerView.setAdapter(adapter);
-            }
+        if(resultCode!=RESULT_OK){
+            return;
         }
-        if (requestCode == add_channel_code) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(getBaseContext(), "Successfully added", Toast.LENGTH_SHORT).show();
-                cAdapter = new ChannelAdapter(this);
-                recyclerView.setAdapter(cAdapter);
-            }
+        Toast.makeText(getBaseContext(), "Successfully added", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == add_event_code) {
+            adapter = new EventListAdapter(this);
+            recyclerView.setAdapter(adapter);
+        }else if(requestCode == add_team_code) {
+            cAdapter = new TeamListAdapter(this);
+            recyclerView.setAdapter(cAdapter);
         }
     }
 

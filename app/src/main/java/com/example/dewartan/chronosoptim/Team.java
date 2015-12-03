@@ -3,12 +3,12 @@ package com.example.dewartan.chronosoptim;
 /**
  * Created by dewartan on 11/22/15.
  */
-public class Channel {
+public class Team {
 
     private String name;
     private String description;
 
-    public Channel(String name, String description) {
+    public Team(String name, String description) {
         this.name = name;
         this.description = description;
     }

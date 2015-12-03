@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class EventDBAdapter extends SQLiteOpenHelper {
+public class EventDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Events.db";
     public static final String EVENT_TABLE_NAME = "event";
@@ -27,7 +27,7 @@ public class EventDBAdapter extends SQLiteOpenHelper {
     public static String rowID = "";
 
 
-    public EventDBAdapter(Context context)
+    public EventDbHelper(Context context)
     {
         super(context, DATABASE_NAME , null, 1);
     }

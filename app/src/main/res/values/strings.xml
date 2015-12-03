@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Chronos Optim</string>
 
-    <string name="feeds">Feeds</string>
+    <string name="teams">Teams</string>
     <string name="events">Events</string>
 
     <string name="title">Title of Event</string>
-    <string name="create_channel">Create Channel</string>
+    <string name="create_team">Create Team</string>
     <string name="create_event">Create Event</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="subtitle">Subtitle</string>
@@ -19,6 +19,6 @@
     <string name="date">Date</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="channel_name">Channel Name</string>
+    <string name="team_name">Team Name</string>
     <string name="title_activity_create_event">createEvent</string>
 </resources>
