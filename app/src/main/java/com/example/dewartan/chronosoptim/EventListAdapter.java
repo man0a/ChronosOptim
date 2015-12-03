@@ -42,7 +42,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                 if (EventDate.matches(cal,event)){
                     if (!headerAdded) {
                         headerAdded=true;
-                        addHeader(EventDate.convert(cal));// Saturday, 11/11
+                        addHeader(EventDate.format(cal));// Saturday, 11/11
                     }
                     addItem(event);
                 }

@@ -20,7 +20,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String[] EVENT_COLUMNS = new String[]{"_id","title","description","eventdate","starttime","endtime","location","subtitle"};
     private static final String[] TEAM_COLUMNS = new String[]{"_id","name","description","members"};
 
-    public EventDbHelper(Context context){
+    public DbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -29,11 +29,11 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("create table event ( _id integer primary key, title text, description text, eventdate text, starttime text, endtime text, location text, subtitle text)");
         db.execSQL("create table team ( _id integer primary key, name text, description text, members text)");
 
-        insert(new Event("Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page"));
-        insert(new Event("SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project"));
-        insert(new Event("Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Food", "Lunch with Bob"));
-        insert(new Event("Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview", "Interview with Company"));
-        insert(new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay"));
+        insert(db,new Event("Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page"));
+        insert(db,new Event("SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project"));
+        insert(db,new Event("Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Food", "Lunch with Bob"));
+        insert(db,new Event("Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview", "Interview with Company"));
+        insert(db,new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay"));
     }
 
     @Override
@@ -63,17 +63,19 @@ public class DbHelper extends SQLiteOpenHelper {
 //        return rowID;
 //    }
 
-    public boolean insert(Event event){
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void insert(Event event){
+        insert(getWritableDatabase(),event);
+    }
+    public void insert(SQLiteDatabase db,Event event){
         db.insert("event", null, event.content());
-        return true;
+    }
+    public void insert(Team team){
+        insert(getWritableDatabase(), team);
+    }
+    public void insert(SQLiteDatabase db,Team team){
+        db.insert("team", null, team.content());
     }
 
-    public boolean insert(Team team){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert("team", null, team.content());
-        return true;
-    }
 
 //    public Cursor getData(int id){
 //        SQLiteDatabase db = this.getReadableDatabase();

@@ -28,51 +28,47 @@ public class EventDate {
     }
 
     public static boolean beforeMax(Event event){
-        Date evDate;
-        try {
-            evDate = parser.parse(event.getDate());
-        }catch(ParseException ex){
-            evDate=null;
-        }
-        return evDate.before(maxDay);
-    }
-
-    public static String getDayOfWeek(Event event) {
-        String date=event.getDate();
-        Date temp = null;
-        try {
-            temp = parser.parse(date);
-        } catch (ParseException e) {
-
-        }
-        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(temp);
-        return dayOfWeek + ", " + date;
+        return parse(event.getDate()).before(maxDay);
     }
 
     public static boolean beforeMax(Calendar cal){
         return cal.getTime().before(maxDay);
     }
 
+    public static String getDayOfWeek(Event event) {
+        String date=event.getDate();
+        return getDayOfWeek(parse(date)) + ", " + date;
+    }
+    public static String getDayOfWeek(Date d){
+        return new SimpleDateFormat("EEEE", Locale.US).format(d);
+    }
+
     public static String pretty(String s){
         // "MM-dd-yyyy" ->  "dow: M/d"
+        Date date=parse(s);
+        return getDayOfWeek(date) + ": " + new SimpleDateFormat("M/d").format(date);
+    }
+
+    public static Date parse(String s){
         Date date=null;
         try{
             date=parser.parse(s);
         }catch(ParseException ex){
-            //
+            ex.printStackTrace();
         }
-        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(date);
-        s=dayOfWeek + ": " + new SimpleDateFormat("M/d").format(date);
-        return s;
+        return date;
     }
 
-    public static String convert(Calendar c){
+    public static String format(Date d){
+        return parser.format(d);
+    }
+    public static String format(Calendar c){
         return parser.format(c.getTime());
     }
 
     public static boolean matches(Calendar calendar,Event event){
-        Log.d("matches", convert(calendar));
-        return event.getDate().equals(convert(calendar));
+        Log.d("matches", format(calendar));
+        return event.getDate().equals(format(calendar));
     }
 
     public static boolean contains(ArrayList<String> headers,Event event){

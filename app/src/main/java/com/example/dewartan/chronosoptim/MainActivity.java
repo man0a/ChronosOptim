@@ -89,11 +89,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                     alertDialogBuilder.setPositiveButton("remove", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
-                            Event event = (Event) adapter.getItem(position);
-                            String id=dbHelper.getRowid(event.getTitle());
-                            dbHelper.deleteEvent(Integer.parseInt(id));
-                            adapter = new EventListAdapter(context);
-                            recyclerView.setAdapter(adapter);
+//                            Event event = (Event) adapter.getItem(position);
+//                            String id=dbHelper.getRowid(event.getTitle());
+//                            dbHelper.deleteEvent(Integer.parseInt(id));
+//                            adapter = new EventListAdapter(context);
+//                            recyclerView.setAdapter(adapter);
                         }
                     });
 
@@ -160,8 +160,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             return true;
         }
         if(id == R.id.clearDatabase) {
-            eventDbHelper.clearDatabase();
-            teamDbHelper.clearDatabase();
+            dbHelper.clear();
             cAdapter = new TeamListAdapter(this);
             adapter = new EventListAdapter(this);
             recyclerView.setAdapter(adapter);

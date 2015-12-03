@@ -28,15 +28,12 @@ import java.util.Locale;
  */
 public class AddEventActivity extends AppCompatActivity {
 
-    private String saveTime, saveDate;
-
-    private Button startTime, endTime, calendarButton, cancelButton, saveButton;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
     static final int TIME_DIALOG_ID = 1;
     static final int TIME_DIALOG_ID2 = 2;
     static final int DATE_DIALOG = 3;
-    private EventDbHelper eventDB;
+    private DbHelper eventDB;
 
     int cur = 0;
     private TextView start_time, end_time, calendarDate, toolbarTitle;
@@ -49,7 +46,7 @@ public class AddEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event);
 
-        eventDB = new EventDbHelper(this);
+        eventDB = new DbHelper(this);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(actionBarToolBar);
@@ -60,10 +57,6 @@ public class AddEventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
-        addListenerOnButton();
-
-
         start_time = (TextView) findViewById(R.id.input_start_time);
         end_time = (TextView) findViewById(R.id.input_end_time);
         calendarDate = (TextView) findViewById(R.id.input_date);
@@ -72,85 +65,51 @@ public class AddEventActivity extends AppCompatActivity {
         inputLocation = (EditText)  findViewById(R.id.input_location);
         inputDescription = (EditText) findViewById(R.id.input_description);
         inputSubtitle = (EditText) findViewById(R.id.input_subtitle);
+    }
 
-        cancelButton = (Button) findViewById(R.id.cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    public void cancel(View v) {
+        finish();
+    }
 
-        saveButton = (Button) findViewById(R.id.save);
-        saveButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                DateFormat df1 = new SimpleDateFormat("MM-dd-yyyy");
-                Date selectedDate =  null;
-                try {
-                     selectedDate = df1.parse(mMonth +"-"+mDay +"-"+ mYear);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+    public void save(View v){
+        Date selectedDate=EventDate.parse(mMonth +"-"+mDay +"-"+ mYear);
 
-                Calendar cal1 = Calendar.getInstance();
-                cal1.setTime(selectedDate);
-                String date = new SimpleDateFormat("MM-dd-yyyy").format(selectedDate);
-                eventDB.insertEvent(
-                        inputDescription.getText().toString(),
-                        start_time.getText().toString(),
-                        inputLocation.getText().toString(),
-                        end_time.getText().toString(),
-                        inputTitle.getText().toString(),
-                        date,
-                        inputSubtitle.getText().toString());
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
+//        Calendar cal1 = Calendar.getInstance();
+//        cal1.setTime(selectedDate);
+        Event event=new Event(inputDescription.getText().toString(),
+                start_time.getText().toString(),
+                inputLocation.getText().toString(),
+                end_time.getText().toString(),
+                inputTitle.getText().toString(),
+                EventDate.format(selectedDate),
+                inputSubtitle.getText().toString());
+        eventDB.insert(event);
+        setResult(RESULT_OK);
+        finish();
     }
 
 
-    public void addListenerOnButton() {
-        endTime = (Button) findViewById(R.id.endtimepicker);
-        startTime = (Button) findViewById(R.id.starttimepicker);
-        calendarButton = (Button) findViewById(R.id.datepicker);
+    public void launchCal(View v){
+        Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        calendarDate.setText(mMonth+1 + "-" + mDay+ "-" + mYear);
 
-        calendarButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-                calendarDate.setText(mMonth+1 + "-" + mDay+ "-" + mYear);
+        cur = DATE_DIALOG;
 
-             cur = DATE_DIALOG;
-
-            showDialog(DATE_DIALOG);
-            }
-        });
-
-
-        startTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                cur = TIME_DIALOG_ID;
-                showDialog(TIME_DIALOG_ID);
-            }
-        });
-
-        endTime.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                cur = TIME_DIALOG_ID2;
-                showDialog(TIME_DIALOG_ID2);
-            }
-        });
+        showDialog(DATE_DIALOG);
     }
 
+    public void launchStart(View v) {
+        cur = TIME_DIALOG_ID;
+        showDialog(TIME_DIALOG_ID);
+    }
+
+    public void launchEnd(View v) {
+        cur = TIME_DIALOG_ID2;
+        showDialog(TIME_DIALOG_ID2);
+    }
 
     @Override
     protected Dialog onCreateDialog(int id) {
