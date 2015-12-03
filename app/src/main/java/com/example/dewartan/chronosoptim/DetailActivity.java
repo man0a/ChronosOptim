@@ -40,7 +40,7 @@ public class DetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             location.setText(eventOnDay.getLocation());
             description.setText(eventOnDay.getDescription());
-            date.setText(eventOnDay.getDateDayOfWeek());
+            date.setText(EventDate.getDayOfWeek(eventOnDay));
             subtitle.setText(eventOnDay.subtitle());
             time.setText(eventOnDay.getStartTime()+"-"+eventOnDay.getEndTime());
         }

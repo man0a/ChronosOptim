@@ -15,36 +15,25 @@ import android.widget.TextView;
  */
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
 
-    private static EventDbHelper eventDB;
+    private static DbHelper eventDB;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
 
     private ArrayList<String> titleEvent = new ArrayList<>();
-    private ArrayList<Event> eventInfo = new ArrayList<>();
-
+    private ArrayList<Event> events = new ArrayList<>();
     private TreeSet<Integer> sectionHeader = new TreeSet<>();
 
 
     public EventListAdapter(Context context) {
-        eventDB = new EventDbHelper(context);
+        eventDB = new DbHelper(context);
         initHeaders();
     }
 
     private void initHeaders() {
-        ArrayList<Event> dbEvents = eventDB.getAllEvents();
-        Event test1 = new Event("Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page");
-        Event test2 = new Event("SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project");
-        Event test3 = new Event("Shapiro", "12-22-2015","11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment" , "Food", "Lunch with Bob");
-        Event test4 = new Event("Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes " , "Interview", "Interview with Company");
-        Event test5 = new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay");
-        dbEvents.add(test1);
-        dbEvents.add(test2);
-        dbEvents.add(test3);
-        dbEvents.add(test4);
-        dbEvents.add(test5);
+        ArrayList<Event> dbEvents = eventDB.pull();
 
+        // generate list of headers and events
         Calendar cal = new GregorianCalendar();
-
         while(EventDate.beforeMax(cal)) {
 
             boolean headerAdded = false;
@@ -53,7 +42,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                 if (EventDate.matches(cal,event)){
                     if (!headerAdded) {
                         headerAdded=true;
-                        addHeader(EventDate.convert(cal)); //Adds in date
+                        addHeader(EventDate.convert(cal));// Saturday, 11/11
                     }
                     addItem(event);
                 }
@@ -68,14 +57,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         }
 
         titleEvent.add(event.getTitle());
-        eventInfo.add(event);
+        events.add(event);
         notifyDataSetChanged();
     }
 
     public void addHeader(String date) {
         String header=EventDate.pretty(date);
         titleEvent.add(header);   //Adds date string
-        eventInfo.add(null); //For spacing
+        events.add(null); //For spacing
         sectionHeader.add(titleEvent.size() - 1);
         notifyDataSetChanged();
     }
@@ -100,7 +89,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         switch (rowType) {
             case TYPE_ITEM:
                 holder.textView.setText(titleEvent.get(position));
-                Event activity = eventInfo.get(position);
+                Event activity = events.get(position);
                 holder.subView.setText(activity.getSubtitle());
                 holder.locationView.setText(activity.getLocation());
                 break;
@@ -117,7 +106,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     }
 
 
-    public Object getItem(int position) { return eventInfo.get(position); }
+    public Object getItem(int position) { return events.get(position); }
 
     @Override
     public long getItemId(int position) {

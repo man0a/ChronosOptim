@@ -1,6 +1,8 @@
 package com.example.dewartan.chronosoptim;
 
 import android.util.Log;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,18 @@ public class EventDate {
             evDate=null;
         }
         return evDate.before(maxDay);
+    }
+
+    public static String getDayOfWeek(Event event) {
+        String date=event.getDate();
+        Date temp = null;
+        try {
+            temp = parser.parse(date);
+        } catch (ParseException e) {
+
+        }
+        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(temp);
+        return dayOfWeek + ", " + date;
     }
 
     public static boolean beforeMax(Calendar cal){

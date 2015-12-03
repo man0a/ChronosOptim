@@ -21,18 +21,17 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
 
-    private EventDbHelper eventDbHelper;
-    private TeamDbHelper teamDbHelper;
+    private DbHelper dbHelper;
     private EventListAdapter adapter;
     private TeamListAdapter cAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private Toolbar actionBarToolBar;
-    private Button feedBtn, eventBtn;
+//    private Button feedBtn, eventBtn;
     int add_event_code = 1;
     int add_team_code = 2;
     private TextView title;
-    private ItemTouchHelper itemTouchHelper;
+//    private ItemTouchHelper itemTouchHelper;
     private Context context= this;
 
     @Override
@@ -61,10 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         //RecyclerView Adapters
         adapter = new EventListAdapter(this);
         cAdapter = new TeamListAdapter(this);
-
-        //Database Adapters
-        eventDbHelper = new EventDbHelper(this);
-        teamDbHelper = new TeamDbHelper(this);
+        dbHelper = new DbHelper(this);
 
         recyclerView.setAdapter(adapter);
 
@@ -94,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
                             Event event = (Event) adapter.getItem(position);
-                            String id = eventDbHelper.getRowid(event.getTitle());
-                            eventDbHelper.deleteEvent(Integer.parseInt(id));
+                            String id=dbHelper.getRowid(event.getTitle());
+                            dbHelper.deleteEvent(Integer.parseInt(id));
                             adapter = new EventListAdapter(context);
                             recyclerView.setAdapter(adapter);
                         }

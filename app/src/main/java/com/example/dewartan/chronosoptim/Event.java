@@ -1,6 +1,7 @@
 package com.example.dewartan.chronosoptim;
 
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -58,16 +59,17 @@ public class Event implements Parcelable {
         return date;
     }
 
-    public String getDateDayOfWeek() {
-        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-        Date temp = null;
-        try {
-            temp = df.parse(date);
-        } catch (ParseException e) {
 
-        }
-        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(temp);
-        return dayOfWeek + ", " + date;
+    public ContentValues content(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("title", title);
+        contentValues.put("description", description);
+        contentValues.put("eventdate", date);
+        contentValues.put("starttime", startTime);
+        contentValues.put("endtime", endTime);
+        contentValues.put("location", location);
+        contentValues.put("subtitle", subtitle);
+        return contentValues;
     }
 
     public String getStartTime() {return startTime;}
