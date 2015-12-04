@@ -1,0 +1,2 @@
+This directory on our server (/~prakhar drive on cs.brandeis.edu network) simply contains the Parse PHP SDK. In lieu of us creating a duplicate of Parse's proprietary code, please instead see https://github.com/parseplatform/parse-php-sdk for the latest version.  
+Thank you. :)
