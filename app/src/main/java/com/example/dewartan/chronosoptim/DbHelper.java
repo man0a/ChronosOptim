@@ -2,13 +2,10 @@ package com.example.dewartan.chronosoptim;
 
 import java.util.ArrayList;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -17,8 +14,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String EVENT_TABLE_NAME = "event";
     public static final String TEAM_TABLE_NAME = "team";
 
-    private static final String[] EVENT_COLUMNS = new String[]{"_id","title","description","eventdate","starttime","endtime","location","subtitle"};
-    private static final String[] TEAM_COLUMNS = new String[]{"_id","name","description","members"};
+    private static final String[] EVENT_COLUMNS = new String[]{"id","title","description","eventdate","starttime","endtime","location","subtitle"};
+    private static final String[] TEAM_COLUMNS = new String[]{"id","name","description","members"};
 
     public DbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,17 +23,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table event ( _id integer primary key, title text, description text, eventdate text, starttime text, endtime text, location text, subtitle text)");
-        db.execSQL("create table team ( _id integer primary key, name text, description text, members text)");
+        db.execSQL("create table event ( id text, title text, description text, eventdate text, starttime text, endtime text, location text, subtitle text)");
+        db.execSQL("create table team ( id text, name text, description text, members text)");
 
-        insert(db,new Event("Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "MAD Project Meeting", "Fix views on the events page"));
-        insert(db,new Event("SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project"));
-        insert(db,new Event("Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Food", "Lunch with Bob"));
-        insert(db,new Event("Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview", "Interview with Company"));
-        insert(db, new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay"));
+        insert(db,new Event("MAD Project Meeting", "Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "Fix views on the events page"));
+        insert(db,new Event("NanoTwitter", "SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "105B NanoTwitter Project"));
+        insert(db,new Event("Food", "Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Lunch with Bob"));
+        insert(db,new Event("Interview", "Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview with Company"));
+        insert(db, new Event("Date Night", "Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Dinner with Fay"));
 
-
-        insert(db,new Team("Data Structures", "Cosi 21a Class","XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
+        insert(db, new Team("Data Structures", "Cosi 21a Class", "XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
         insert(db, new Team("Patriots Fan Club", "New England Patriots Fan Club", "XiIccSTdEq,hgbigJEsZr,JFxq3s4iaU"));
 
     }
@@ -68,20 +64,22 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public void delete(Event e){
-        // _id,title,description,eventdate,starttime,endtime,location,subtitle
-        String where=EVENT_COLUMNS[1]+"='"+e.getTitle()+"' AND "+
+        // _id,id,title,description,eventdate,starttime,endtime,location,subtitle
+        String where=EVENT_COLUMNS[0]+"='"+e.getId()+"' AND "+
+                EVENT_COLUMNS[1]+"='"+e.getTitle()+"' AND "+
                 EVENT_COLUMNS[2]+"='"+e.getDescription()+"' AND "+
                 EVENT_COLUMNS[3]+"='"+e.getDate()+"' AND "+
                 EVENT_COLUMNS[4]+"='"+e.getStartTime()+"' AND "+
                 EVENT_COLUMNS[5]+"='"+e.getEndTime()+"' AND "+
                 EVENT_COLUMNS[6]+"='"+e.getLocation()+"' AND "+
                 EVENT_COLUMNS[7]+"='"+e.getSubtitle()+"'";
-        delete(where,EVENT_TABLE_NAME);
+        delete(where, EVENT_TABLE_NAME);
     }
 
     public void delete(Team t){
-        // _id,name,description,members
-        String where=TEAM_COLUMNS[1]+"='"+t.getName()+"' AND "+
+        // _id,id,name,description,members
+        String where=TEAM_COLUMNS[0]+"='"+t.getId()+"' AND "+
+                TEAM_COLUMNS[1]+"='"+t.getName()+"' AND "+
                 TEAM_COLUMNS[2]+"='"+t.getDescription()+"' AND "+
                 TEAM_COLUMNS[3]+"='"+t.getMembers()+"'";
         delete(where,TEAM_TABLE_NAME);
@@ -103,14 +101,15 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor res=query(EVENT_TABLE_NAME);
 
         while(!res.isAfterLast()){
+            String id = res.getString(0);
             String title = res.getString(1);
             String description = res.getString(2);
-            String eventdate = res.getString(3);
-            String starttime = res.getString(4);
-            String endtime = res.getString(5);
+            String eventDate = res.getString(3);
+            String startTime = res.getString(4);
+            String endTime = res.getString(5);
             String location = res.getString(6);
             String subtitle = res.getString(7);
-            events.add(new Event(location, eventdate, starttime, endtime, description, title, subtitle));
+            events.add(new Event(id, title, location, eventDate, startTime, endTime, description, subtitle));
             res.moveToNext();
         }
         return events;
@@ -121,6 +120,7 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor res=query(TEAM_TABLE_NAME);
 
         while(!res.isAfterLast()){
+            String id=res.getString(0);
             String name=res.getString(1);
             String description = res.getString(2);
             String members = res.getString(3);
@@ -130,9 +130,21 @@ public class DbHelper extends SQLiteOpenHelper {
         return teams;
     }
 
+    public String[] pullUsers(String teamId){
+        SQLiteDatabase db=getReadableDatabase();
+        String[] selectionArgs=new String[]{"id='"+teamId+"'"};
+        Cursor res=db.rawQuery("select * from team",selectionArgs);
+        if(res.moveToFirst()){
+            String userList=res.getString(4);
+            return userList.split(",");
+        }else{
+            return null;
+        }
+    }
+
     public Cursor query(String tableName){
         SQLiteDatabase db=getReadableDatabase();
-        Cursor res=db.rawQuery( "select * from "+tableName, null );
+        Cursor res=db.rawQuery("select * from "+tableName, null );
         res.moveToFirst();
         return res;
     }

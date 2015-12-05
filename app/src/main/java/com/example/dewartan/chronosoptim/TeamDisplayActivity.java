@@ -35,9 +35,6 @@ public class TeamDisplayActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             description.setText(team.getDescription());
-//            date.setText(EventDate.getDayOfWeek(eventOnDay));
-//            subtitle.setText(eventOnDay.subtitle());
-//            time.setText(eventOnDay.getStartTime()+"-"+eventOnDay.getEndTime());
         }
 
     }

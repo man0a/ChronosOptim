@@ -41,7 +41,7 @@ public class EventDisplayActivity extends AppCompatActivity {
             location.setText(eventOnDay.getLocation());
             description.setText(eventOnDay.getDescription());
             date.setText(EventDate.getDayOfWeek(eventOnDay));
-            subtitle.setText(eventOnDay.subtitle());
+            subtitle.setText(eventOnDay.getSubtitle());
             time.setText(eventOnDay.getStartTime()+"-"+eventOnDay.getEndTime());
         }
 

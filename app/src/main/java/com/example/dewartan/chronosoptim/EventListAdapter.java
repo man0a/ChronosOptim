@@ -161,8 +161,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         public void onClick(View v) {
             Event eventOnDay = (Event) getItem(getPosition());
             if(eventOnDay != null) {
-                final Intent i;
-                i = new Intent(context, EventDisplayActivity.class);
+                Intent i = new Intent(context, EventDisplayActivity.class);
                 i.putExtra("viewEvent", eventOnDay); //Places the object into the key value pair
                 context.startActivity(i);
             }

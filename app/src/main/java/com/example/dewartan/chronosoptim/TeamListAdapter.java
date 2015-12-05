@@ -80,8 +80,7 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
         @Override
         public void onClick(View v) {
             Team selected = (Team) getItem(getPosition());
-            final Intent intent;
-            intent = new Intent(context, TeamDisplayActivity.class);
+            Intent intent = new Intent(context, TeamDisplayActivity.class);
             intent.putExtra("viewTeam", selected);
             context.startActivity(intent);
         }
