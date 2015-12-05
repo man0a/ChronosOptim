@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <include
+        android:id="@+id/empty_bar"
+        layout="@layout/empty_toolbar"
+
+        ></include>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/title"
+        android:layout_below="@+id/empty_bar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/description"
+        android:layout_marginTop="45dp"
+        android:layout_below="@+id/title" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
+</RelativeLayout>

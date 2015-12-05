@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class DetailActivity extends AppCompatActivity {
+public class EventDisplayActivity extends AppCompatActivity {
     private Toolbar actionBarToolBar;
     TextView title, location, description, date, toolbarTitle, subtitle, time;
 

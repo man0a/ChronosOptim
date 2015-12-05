@@ -1,5 +1,6 @@
 package com.example.dewartan.chronosoptim;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,8 +16,6 @@ import android.widget.TextView;
 public class AddTeamActivity extends AppCompatActivity {
 
     private TextView toolbarTitle;
-    private TeamDbHelper teamDB;
-    private Button cancel, save;
     private EditText mDescription, mName;
 
     @Override
@@ -31,32 +30,26 @@ public class AddTeamActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false); //Added a text view in toolbar so I can manipulate app
 
-        teamDB = new TeamDbHelper(this);
-
         mName = (EditText) findViewById(R.id.input_Team_name);
         mDescription = (EditText) findViewById(R.id.input_description);
-
-        cancel = (Button) findViewById(R.id.cancel);
-        save = (Button) findViewById(R.id.save);
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                teamDB.insertTeam(
-                        mName.getText().toString(),
-                        mDescription.getText().toString()
-                );
-                setResult(RESULT_OK);
-                finish();
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
+    public void save(View v) {
+        Team team=new Team(
+            mName.getText().toString(),
+            mDescription.getText().toString(),
+            null
+        );
+        Intent backIntent=new Intent();
+        backIntent.putExtra("teamObj",team);
+        setResult(RESULT_OK, backIntent);
+        finish();
+    }
+
+    public void cancel(View v) {
+        setResult(RESULT_CANCELED,null);
+        finish();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){

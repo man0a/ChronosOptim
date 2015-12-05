@@ -33,7 +33,12 @@ public class DbHelper extends SQLiteOpenHelper {
         insert(db,new Event("SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "NanoTwitter", "105B NanoTwitter Project"));
         insert(db,new Event("Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Food", "Lunch with Bob"));
         insert(db,new Event("Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview", "Interview with Company"));
-        insert(db,new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay"));
+        insert(db, new Event("Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Date Night", "Dinner with Fay"));
+
+
+        insert(db,new Team("Data Structures", "Cosi 21a Class","XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
+        insert(db, new Team("Patriots Fan Club", "New England Patriots Fan Club", "XiIccSTdEq,hgbigJEsZr,JFxq3s4iaU"));
+
     }
 
     @Override
@@ -46,11 +51,11 @@ public class DbHelper extends SQLiteOpenHelper {
     public void clear() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+ EVENT_TABLE_NAME);
-        db.execSQL("DELETE FROM "+ TEAM_TABLE_NAME);
+        db.execSQL("DELETE FROM " + TEAM_TABLE_NAME);
     }
 
     public void insert(Event event){
-        insert(getWritableDatabase(),event);
+        insert(getWritableDatabase(), event);
     }
     public void insert(SQLiteDatabase db,Event event){
         db.insert("event", null, event.content());
@@ -62,9 +67,8 @@ public class DbHelper extends SQLiteOpenHelper {
         db.insert("team", null, team.content());
     }
 
-    public void delete (Event e){
+    public void delete(Event e){
         // _id,title,description,eventdate,starttime,endtime,location,subtitle
-        SQLiteDatabase db=getWritableDatabase();
         String where=EVENT_COLUMNS[1]+"='"+e.getTitle()+"' AND "+
                 EVENT_COLUMNS[2]+"='"+e.getDescription()+"' AND "+
                 EVENT_COLUMNS[3]+"='"+e.getDate()+"' AND "+
@@ -72,23 +76,31 @@ public class DbHelper extends SQLiteOpenHelper {
                 EVENT_COLUMNS[5]+"='"+e.getEndTime()+"' AND "+
                 EVENT_COLUMNS[6]+"='"+e.getLocation()+"' AND "+
                 EVENT_COLUMNS[7]+"='"+e.getSubtitle()+"'";
+        delete(where,EVENT_TABLE_NAME);
+    }
 
-        Log.w("shit",where);
+    public void delete(Team t){
+        // _id,name,description,members
+        String where=TEAM_COLUMNS[1]+"='"+t.getName()+"' AND "+
+                TEAM_COLUMNS[2]+"='"+t.getDescription()+"' AND "+
+                TEAM_COLUMNS[3]+"='"+t.getMembers()+"'";
+        delete(where,TEAM_TABLE_NAME);
 
+    }
 
+    public void delete(String where,String tableName){
+        SQLiteDatabase db=getWritableDatabase();
         // which, where, whereArgs, groupBy, having, orderBy, limit
-        Cursor cursor = db.query(EVENT_TABLE_NAME, new String[]{"rowid"}, where, null, null, null, null, "1");
+        Cursor cursor = db.query(tableName, new String[]{"rowid"}, where, null, null, null, null, "1");
         if(cursor.moveToFirst()){
             int rowid=cursor.getInt(0);
-            db.delete(EVENT_TABLE_NAME, "rowid=" + rowid, null);
+            db.delete(tableName, "rowid=" + rowid, null);
         }
     }
 
-    public ArrayList<Event> pull(){
+    public ArrayList<Event> pullEvents(){
         ArrayList<Event> events = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from event", null );
-        res.moveToFirst();
+        Cursor res=query(EVENT_TABLE_NAME);
 
         while(!res.isAfterLast()){
             String title = res.getString(1);
@@ -102,5 +114,26 @@ public class DbHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return events;
+    }
+
+    public ArrayList<Team> pullTeams(){
+        ArrayList<Team> teams = new ArrayList<>();
+        Cursor res=query(TEAM_TABLE_NAME);
+
+        while(!res.isAfterLast()){
+            String name=res.getString(1);
+            String description = res.getString(2);
+            String members = res.getString(3);
+            teams.add(new Team(name, description, members));
+            res.moveToNext();
+        }
+        return teams;
+    }
+
+    public Cursor query(String tableName){
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor res=db.rawQuery( "select * from "+tableName, null );
+        res.moveToFirst();
+        return res;
     }
 }

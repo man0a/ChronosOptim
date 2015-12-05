@@ -2,7 +2,9 @@ package com.example.dewartan.chronosoptim;
 
 import java.util.*;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,29 +16,25 @@ import android.widget.TextView;
  */
 public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHolder> {
 
-    private List<Team> feeds = new ArrayList<Team>();
-    private TeamDbHelper TeamDB;
-    private LayoutInflater mInflater;
+    private List<Team> teams = new ArrayList<>();
+    private DbHelper dbHelper;
 
-    public TeamListAdapter(Context context) {
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        TeamDB = new TeamDbHelper(context);
-        initHeaders();
+    public TeamListAdapter(DbHelper dbHelper) {
+        this.dbHelper=dbHelper;
+        teams=dbHelper.pullTeams();
+        notifyDataSetChanged();
     }
 
-    private void initHeaders() {
-        ArrayList<Team> allTeams = TeamDB.getAllTeams();
-        Team test1 = new Team("Data Structures", "Cosi 21a Class");
-        Team test2 = new Team("Chess Club", "For all those whom love chess");
-        Team test3 = new Team("Lacrosse Events", "Sporting events concerning Brandeis Lacrosse");
-        Team test4 = new Team("Patriots Fan Club", "New England Patriots Fan Club");
-        Team test5 = new Team("Ultimate Frisbee Pickup", "Pickup games for Ultimate Frisbee");
-        allTeams.add(test1);
-        allTeams.add(test2);
-        allTeams.add(test3);
-        allTeams.add(test4);
-        allTeams.add(test5);
-        this.feeds = allTeams;
+    public void append(Team team){
+        dbHelper.insert(team);
+        teams.add(team);
+        notifyDataSetChanged();
+    }
+
+    public void remove(Team team){
+        dbHelper.delete(team);
+        teams.remove(team);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -47,12 +45,13 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Team activity = feeds.get(position);
-        holder.textView.setText(activity.getName());
-        holder.subView.setText(activity.getDescription());
+        Team team = teams.get(position);
+        holder.textView.setText(team.getName());
+        holder.subView.setText(team.getDescription());
+        holder.textView.setTag(team);
     }
 
-    public Object getItem(int position) { return feeds.get(position); }
+    public Object getItem(int position) { return teams.get(position); }
 
     @Override
     public long getItemId(int position) {
@@ -61,7 +60,7 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return feeds.size();
+        return teams.size();
     }
 
 
@@ -74,17 +73,19 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.title);
             subView = (TextView) itemView.findViewById(R.id.description);
-            context = itemView.getContext();
             itemView.setOnClickListener(this);
+            context = itemView.getContext();
         }
 
         @Override
-        public void onClick(View v) {}
-
+        public void onClick(View v) {
+            Team selected = (Team) getItem(getPosition());
+            final Intent intent;
+            intent = new Intent(context, TeamDisplayActivity.class);
+            intent.putExtra("viewTeam", selected);
+            context.startActivity(intent);
+        }
     }
-
-
-
 }
 
 

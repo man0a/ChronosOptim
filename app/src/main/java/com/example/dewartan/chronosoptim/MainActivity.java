@@ -1,6 +1,5 @@
 package com.example.dewartan.chronosoptim;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
@@ -24,11 +21,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     private EventListAdapter adapter;
     private TeamListAdapter cAdapter;
     private RecyclerView recyclerView;
-    private LinearLayoutManager mLayoutManager;
-    private Toolbar actionBarToolBar;
     public static final int add_event_code = 1;
     public static final int add_team_code = 2;
-    private TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,24 +32,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         //RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
         //Setup Toolbar
-        actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
-        title = (TextView) actionBarToolBar.findViewById(R.id.toolbar_title);
-        title.setText("Chronos Optim");
+        Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
+        TextView title = (TextView) actionBarToolBar.findViewById(R.id.toolbar_title);
+        title.setText(this.getString(R.string.app_name));
         setSupportActionBar(actionBarToolBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //Setup the tabs
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabanim_tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Events"));
-        tabLayout.addTab(tabLayout.newTab().setText("Teams"));
+        tabLayout.addTab(tabLayout.newTab().setText(this.getString(R.string.events)));
+        tabLayout.addTab(tabLayout.newTab().setText(this.getString(R.string.teams)));
 
-        //RecyclerView Adapters
-        adapter = new EventListAdapter(this);
-        cAdapter = new TeamListAdapter(this);
+        // DbHelper and RecyclerView adapters
+        DbHelper dbHelper=new DbHelper(this);
+        adapter = new EventListAdapter(dbHelper);
+        cAdapter = new TeamListAdapter(dbHelper);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -75,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 //Remove swiped item from list and notify the RecyclerView
 
-                final int position = viewHolder.getAdapterPosition();
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertDialogBuilder.setMessage("Are you sure that you want to remove it?");
 
@@ -83,8 +77,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 alertDialogBuilder.setPositiveButton("remove", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        Event event=(Event)((EventListAdapter.ViewHolder)viewHolder).textView.getTag();
-                        adapter.remove(event);
+                        Object obj=((EventListAdapter.ViewHolder) viewHolder).textView.getTag();
+                        if(obj instanceof Event){
+                            adapter.remove((Event)obj);
+                        }else if(obj instanceof Team){
+                            cAdapter.remove((Team)obj);
+                        }
                     }
                 });
 
@@ -169,7 +167,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 Event event=data.getExtras().getParcelable("eventObj");
                 adapter.append(event);
                 break;
-            case add_team_code: break;
+            case add_team_code:
+                Team team=data.getExtras().getParcelable("teamObj");
+                cAdapter.append(team);
+                break;
 //            case clear database
         }
     }

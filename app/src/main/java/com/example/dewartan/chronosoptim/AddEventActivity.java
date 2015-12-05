@@ -72,8 +72,6 @@ public class AddEventActivity extends AppCompatActivity {
     public void save(View v){
         Date selectedDate=EventDate.parse(mMonth + "-" + mDay + "-" + mYear);
 
-//        Calendar cal1 = Calendar.getInstance();
-//        cal1.setTime(selectedDate);
         Event event=new Event(
                 inputLocation.getText().toString(),
                 EventDate.format(selectedDate),
@@ -82,7 +80,6 @@ public class AddEventActivity extends AppCompatActivity {
                 inputDescription.getText().toString(),
                 inputTitle.getText().toString(),
                 inputSubtitle.getText().toString());
-//        dbHelper.insert(event);
         Intent backIntent = new Intent();
         backIntent.putExtra("eventObj",event);
         setResult(RESULT_OK, backIntent);

@@ -88,6 +88,7 @@
                         android:layout_weight="1.0"
                         android:textColor="@android:color/black"
                         android:id="@+id/save"
+                        android:onClick="save"
                         android:text="@string/save" />
 
                     <Button
@@ -95,6 +96,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:id="@+id/cancel"
+                        android:onClick="cancel"
                         android:layout_weight="1.0"
                         android:text="@string/cancel"/>
                 </LinearLayout>

@@ -11,6 +11,10 @@
     <string name="subtitle">Subtitle</string>
     <string name="time">Time</string>
 
+    <string name="doRemove">Remove</string>
+    <string name="doNotRemove">Cancel</string>
+
+
     <string name="location">Location</string>
     <string name="description">Description</string>
     <string name="start_time">Start Time</string>

@@ -1,20 +1,23 @@
 package com.example.dewartan.chronosoptim;
 
 import android.content.ContentValues;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by dewartan on 11/22/15.
  */
-public class Team {
+public class Team implements Parcelable{
 
     private String name;
     private String description;
+    private String members;
 
-    public Team(String name, String description) {
+    public Team(String name, String description, String members) {
         this.name = name;
         this.description = description;
+        this.members=members;
     }
-
 
     public String getName() {
         return name;
@@ -24,10 +27,60 @@ public class Team {
         return description;
     }
 
+    public String getMembers() {
+        return members;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
+    public void setDescription(String description) {
+        this.description=description;
+    }
+
+    public void setMembers(String members) {
+        this.members=members;
+    }
+
+
     public ContentValues content(){
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("description", description);
+        contentValues.put("members", members);
         return contentValues;
+
+    }
+
+    // Parcelable implementation boilerplate
+    protected Team(Parcel in) {
+        this.name = in.readString();
+        this.description = in.readString();
+        this.members = in.readString();
+    }
+
+    public static final Creator<Team> CREATOR = new Creator<Team>() {
+        @Override
+        public Team createFromParcel(Parcel in) {
+            return new Team(in);
+        }
+
+        @Override
+        public Team[] newArray(int size) {
+            return new Team[size];
+        }
+    };
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(members);
     }
 }

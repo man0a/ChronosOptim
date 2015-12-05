@@ -4,7 +4,6 @@ import java.util.*;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import android.widget.TextView;
  */
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
 
-    private static DbHelper dbHelper;
+    private DbHelper dbHelper;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
 
@@ -26,9 +25,9 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
     private ArrayList<Event> dbEvents;
 
-    public EventListAdapter(Context context) {
-        dbHelper = new DbHelper(context);
-        dbEvents = dbHelper.pull();
+    public EventListAdapter(DbHelper dbHelper) {
+        this.dbHelper = dbHelper;
+        dbEvents = dbHelper.pullEvents();
         initHeaders();
     }
 
@@ -163,7 +162,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             Event eventOnDay = (Event) getItem(getPosition());
             if(eventOnDay != null) {
                 final Intent i;
-                i = new Intent(context, DetailActivity.class);
+                i = new Intent(context, EventDisplayActivity.class);
                 i.putExtra("viewEvent", eventOnDay); //Places the object into the key value pair
                 context.startActivity(i);
             }
