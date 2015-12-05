@@ -10,11 +10,26 @@ require_once("./optim.php");
 main();
 
 function main(){
-	$weights=optim("GfCEpAfie6");
-	foreach($weights as $weight){
-		$str=$weight->toStr();
-		echo $str."<br>";
+	if(!isset($_POST["id"])){
+		echo "bogus";
+		return;
 	}
+
+	if(strcmp(trim($_POST["id"]),"!")==0){
+		$user=ParseObject::create("Users");		
+		$user->save();
+		$objId=$user->getObjectId();
+		$user->set("uname",$objId);
+		$user->save();
+		echo "+user:".$objId;
+	}else{
+		echo "solid";
+	}
+	// $weights=optim("GfCEpAfie6");
+	// foreach($weights as $weight){
+	// 	$str=$weight->toStr();
+	// 	echo $str."<br>";
+	// }
 // 	$x = $_GET["action"];
 // 	echo "pass action ";
 

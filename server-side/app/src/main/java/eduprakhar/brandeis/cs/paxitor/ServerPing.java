@@ -29,7 +29,7 @@ public class ServerPing extends AsyncTask<String, Void, String> {
         this.data=data;
     }
 @Override
-    protected String doInBackground(String... urls){ //.. Gives a string seperated by commas, no max parameter
+    protected String doInBackground(String... urls){
         // worker thread
         try {
             // hello

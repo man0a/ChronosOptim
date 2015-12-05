@@ -2,6 +2,7 @@ package com.example.dewartan.chronosoptim;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
@@ -10,14 +11,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import java.util.prefs.Preferences;
 
-public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
 
+public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, ClientDevice {
+
+    private SyncBuffer syncBuffer;
     private EventListAdapter evAdapter;
     private TeamListAdapter teamAdapter;
     private RecyclerView recyclerView;
@@ -29,20 +34,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
 
-        //RecyclerView
+        // SyncBuffer
+//        setLocalId("");
+        SyncBuffer syncBuffer=new SyncBuffer(this);
+
+        // RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        //Setup Toolbar
+        // Toolbar
         Toolbar actionBarToolBar = (Toolbar) findViewById(R.id.toolbar);
         TextView title = (TextView) actionBarToolBar.findViewById(R.id.toolbar_title);
         title.setText(this.getString(R.string.app_name));
         setSupportActionBar(actionBarToolBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        //Setup the tabs
+
+        // Tabs
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabanim_tabs);
         tabLayout.addTab(tabLayout.newTab().setText(this.getString(R.string.events)));
         tabLayout.addTab(tabLayout.newTab().setText(this.getString(R.string.teams)));
@@ -53,19 +63,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
         recyclerView.setAdapter(evAdapter);
+//        syncBuffer.send("hello!");
 
+        // Swipe-to-delete functionality
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-            //Prevent swipe on headers
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
 
                 final int position = viewHolder.getAdapterPosition();
                 if(viewHolder instanceof EventListAdapter.ViewHolder){
-                    // swiped event
-                    if (evAdapter.getItem(position) == null) return 0;
+                    // swiped event view
+                    if (evAdapter.getItem(position) == null) return 0;// prevent swipe on section headers
                 }else if(viewHolder instanceof TeamListAdapter.ViewHolder){
-                    // swiped team
+                    // swiped team view
                 }
                 return super.getSwipeDirs(recyclerView, viewHolder);
             }
@@ -134,6 +144,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+    }
+
+
+    public void uponSync(String response){
+        // callback for SyncBuffer
+        Log.w("hey", response);
+    }
+
+    public void setLocalId(String userId){
+        SharedPreferences.Editor editor=getPreferences(0).edit();
+        editor.putString("userId",userId);
+        editor.commit();
+    }
+    public String getLocalId(){
+        SharedPreferences settings=getPreferences(0);
+        return settings.getString("userId","");
     }
 
     @Override
