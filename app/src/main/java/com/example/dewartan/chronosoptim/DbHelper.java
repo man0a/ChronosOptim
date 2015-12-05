@@ -83,7 +83,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public String safeInsert(SQLiteDatabase db,String tableName,ContentValues cv){
         // if no ID, find it...
         String command="select rowid from "+tableName+" where id=''";
-        Cursor res=db.rawQuery(command,null);
+        Cursor res=db.rawQuery(command, null);
         res.moveToFirst();
         int rowId=res.getInt(0);
         res.close();

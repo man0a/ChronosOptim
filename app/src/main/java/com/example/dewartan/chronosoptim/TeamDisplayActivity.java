@@ -65,7 +65,9 @@ public class TeamDisplayActivity extends AppCompatActivity {
     }
 
     public void delete(View view){
-        String username=(String)view.getTag();
+        View listItem=(View)view.getParent();
+        String username=(String)listItem.getTag();
+        Log.w("issue",username);
         userAdapter.remove(username);
     }
 }

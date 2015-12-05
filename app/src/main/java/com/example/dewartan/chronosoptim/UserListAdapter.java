@@ -44,7 +44,7 @@ public class UserListAdapter extends BaseAdapter {
         String uname=getItem(index);
         TextView tw=(TextView) view.findViewById(R.id.uname);
         tw.setText(uname);
-        tw.setTag(uname);
+        view.setTag(uname);
         return view;
     }
 
