@@ -37,11 +37,11 @@ public class Event implements Parcelable {
     protected Event(Parcel in) {
         this.id = in.readString();
         this.title = in.readString();
-        this.location = in.readString();
+        this.description = in.readString();
         this.date = in.readString();
         this.startTime = in.readString();
         this.endTime = in.readString();
-        this.description = in.readString();
+        this.location = in.readString();
         this.subtitle = in.readString();
     }
 
@@ -110,11 +110,11 @@ public class Event implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(title);
-        dest.writeString(location);
+        dest.writeString(description);
         dest.writeString(date);
         dest.writeString(startTime);
         dest.writeString(endTime);
-        dest.writeString(description);
+        dest.writeString(location);
         dest.writeString(subtitle);
     }
 }

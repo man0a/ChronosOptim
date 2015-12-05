@@ -79,7 +79,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             return;
         }
         dbEvents.add(event);
-        initHeaders();
+        refresh();
     }
 
     public void remove(Event event){
@@ -88,6 +88,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
             return;
         }
         dbEvents.remove(event);
+        refresh();
+    }
+
+    public void reset(){
+        dbHelper.reset();
+    }
+    public void refresh(){
         initHeaders();
     }
 

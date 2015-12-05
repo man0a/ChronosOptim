@@ -22,7 +22,7 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
     public TeamListAdapter(DbHelper dbHelper) {
         this.dbHelper=dbHelper;
         teams=dbHelper.pullTeams();
-        notifyDataSetChanged();
+        refresh();
     }
 
     public void append(Team team){
@@ -34,6 +34,14 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
     public void remove(Team team){
         dbHelper.delete(team);
         teams.remove(team);
+        notifyDataSetChanged();
+    }
+
+    public void reset(){
+        dbHelper.reset();
+    }
+
+    public void refresh(){
         notifyDataSetChanged();
     }
 

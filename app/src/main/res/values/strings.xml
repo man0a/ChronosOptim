@@ -5,8 +5,9 @@
     <string name="events">Events</string>
 
     <string name="title">Title of Event</string>
-    <string name="create_team">Create Team</string>
     <string name="create_event">Create Event</string>
+    <string name="create_team">Create Team</string>
+    <string name="reset_db">Reset Database</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="subtitle">Subtitle</string>
     <string name="time">Time</string>

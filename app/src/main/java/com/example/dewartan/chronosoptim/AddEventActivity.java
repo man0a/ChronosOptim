@@ -73,12 +73,12 @@ public class AddEventActivity extends AppCompatActivity {
         Date selectedDate=EventDate.parse(mMonth + "-" + mDay + "-" + mYear);
 
         Event event=new Event(
-                inputLocation.getText().toString(),
+                inputTitle.getText().toString(),
+                inputDescription.getText().toString(),
                 EventDate.format(selectedDate),
                 start_time.getText().toString(),
                 end_time.getText().toString(),
-                inputDescription.getText().toString(),
-                inputTitle.getText().toString(),
+                inputLocation.getText().toString(),
                 inputSubtitle.getText().toString());
         Intent backIntent = new Intent();
         backIntent.putExtra("eventObj",event);

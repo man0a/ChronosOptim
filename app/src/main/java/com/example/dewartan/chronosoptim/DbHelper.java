@@ -148,4 +148,8 @@ public class DbHelper extends SQLiteOpenHelper {
         res.moveToFirst();
         return res;
     }
+
+    public void reset(){
+        onUpgrade(getWritableDatabase(),1,1);
+    }
 }

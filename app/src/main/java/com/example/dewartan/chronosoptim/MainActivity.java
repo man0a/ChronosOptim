@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener {
 
-    private EventListAdapter adapter;
-    private TeamListAdapter cAdapter;
+    private EventListAdapter evAdapter;
+    private TeamListAdapter teamAdapter;
     private RecyclerView recyclerView;
     public static final int add_event_code = 1;
     public static final int add_team_code = 2;
@@ -49,18 +49,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
         // DbHelper and RecyclerView adapters
         DbHelper dbHelper=new DbHelper(this);
-        dbHelper.onUpgrade(dbHelper.getWritableDatabase(),1,1);
-        adapter = new EventListAdapter(dbHelper);
-        cAdapter = new TeamListAdapter(dbHelper);
-        recyclerView.setAdapter(adapter);
+        evAdapter = new EventListAdapter(dbHelper);
+        teamAdapter = new TeamListAdapter(dbHelper);
+        recyclerView.setAdapter(evAdapter);
 
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             //Prevent swipe on headers
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+
                 final int position = viewHolder.getAdapterPosition();
-                if (adapter.getItem(position) == null) return 0;
+                if(viewHolder instanceof EventListAdapter.ViewHolder){
+                    // swiped event
+                    if (evAdapter.getItem(position) == null) return 0;
+                }else if(viewHolder instanceof TeamListAdapter.ViewHolder){
+                    // swiped team
+                }
                 return super.getSwipeDirs(recyclerView, viewHolder);
             }
 
@@ -78,11 +83,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
                 alertDialogBuilder.setPositiveButton("remove", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        Object obj=((EventListAdapter.ViewHolder) viewHolder).textView.getTag();
-                        if(obj instanceof Event){
-                            adapter.remove((Event)obj);
-                        }else if(obj instanceof Team){
-                            cAdapter.remove((Team)obj);
+                        if(viewHolder instanceof EventListAdapter.ViewHolder){
+                            Object obj=((EventListAdapter.ViewHolder) viewHolder).textView.getTag();
+
+                            evAdapter.remove((Event)obj);
+                        }else if(viewHolder instanceof TeamListAdapter.ViewHolder){
+                            Object obj=((TeamListAdapter.ViewHolder) viewHolder).textView.getTag();
+                            teamAdapter.remove((Team)obj);
                         }
                     }
                 });
@@ -112,10 +119,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        recyclerView.setAdapter(adapter);
+                        recyclerView.setAdapter(evAdapter);
                         break;
                     case 1:
-                        recyclerView.setAdapter(cAdapter);
+                        recyclerView.setAdapter(teamAdapter);
                         break;
                 }
             }
@@ -149,13 +156,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
             startActivityForResult(new Intent(this, AddTeamActivity.class), add_team_code);
             return true;
         }
-//        if(id == R.id.clearDatabase) {
-//            dbHelper.clear();
-//            cAdapter = new TeamListAdapter(this);
-//            adapter = new EventListAdapter(this);
-//            recyclerView.setAdapter(adapter);
-//            return true;
-//        }
+        if(id == R.id.resetDatabase) {
+            evAdapter.reset();
+            evAdapter.refresh();
+            teamAdapter.refresh();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -166,11 +172,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         switch(requestCode){
             case add_event_code:
                 Event event=data.getExtras().getParcelable("eventObj");
-                adapter.append(event);
+                evAdapter.append(event);
                 break;
             case add_team_code:
                 Team team=data.getExtras().getParcelable("teamObj");
-                cAdapter.append(team);
+                teamAdapter.append(team);
                 break;
 //            case clear database
         }
