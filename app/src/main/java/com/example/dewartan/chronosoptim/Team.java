@@ -19,7 +19,7 @@ public class Team implements Parcelable{
     }
 
     public Team(String name,String description,String members){
-        this(null,name,description,members);
+        this("",name,description,members);
     }
 
     public String getId(){

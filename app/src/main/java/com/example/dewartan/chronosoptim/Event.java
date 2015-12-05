@@ -30,7 +30,7 @@ public class Event implements Parcelable {
         this.description = description;
     }
     public Event(String title, String location, String date, String startTime, String endTime, String description, String subtitle) {
-        this(null,title,location,date,startTime,endTime,description,subtitle);
+        this("",title,location,date,startTime,endTime,description,subtitle);
     }
 
 

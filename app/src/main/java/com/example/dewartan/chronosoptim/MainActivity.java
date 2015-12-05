@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
         // DbHelper and RecyclerView adapters
         DbHelper dbHelper=new DbHelper(this);
+//        dbHelper.reset();
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
         recyclerView.setAdapter(evAdapter);

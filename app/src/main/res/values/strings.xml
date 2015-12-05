@@ -26,4 +26,11 @@
     <string name="cancel">Cancel</string>
     <string name="team_name">Team Name</string>
     <string name="title_activity_create_event">createEvent</string>
+
+
+    <string name="get_times_button">Find a Meeting Time!</string>
+    <string name="add_user_hint">Search...</string>
+    <string name="add_user_button">Add</string>
+    <string name="delete_user_button">X</string>
+
 </resources>

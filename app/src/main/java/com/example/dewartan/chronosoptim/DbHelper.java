@@ -2,10 +2,12 @@ package com.example.dewartan.chronosoptim;
 
 import java.util.ArrayList;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -54,13 +56,58 @@ public class DbHelper extends SQLiteOpenHelper {
         insert(getWritableDatabase(), event);
     }
     public void insert(SQLiteDatabase db,Event event){
-        db.insert("event", null, event.content());
+        ContentValues cv=event.content();
+        boolean fixId=(((String)cv.get("id")).length()==0);
+        // if has ID insert and exit
+        db.insert(EVENT_TABLE_NAME, null, cv);
+        if(fixId){
+            String newId=safeInsert(db,EVENT_TABLE_NAME,cv);
+            event.setId(newId);
+        }
     }
     public void insert(Team team){
         insert(getWritableDatabase(), team);
     }
     public void insert(SQLiteDatabase db,Team team){
-        db.insert("team", null, team.content());
+        ContentValues cv=team.content();
+        boolean fixId=(((String)cv.get("id")).length()==0);
+        // if has ID insert and exit
+        db.insert(TEAM_TABLE_NAME, null, cv);
+        if(fixId){
+            String newId=safeInsert(db,TEAM_TABLE_NAME,cv);
+            team.setId(newId);
+        }
+
+//        Log.w("over","a"+team.getId()+team.getName()+"A");
+    }
+    public String safeInsert(SQLiteDatabase db,String tableName,ContentValues cv){
+        // if no ID, find it...
+        String command="select rowid from "+tableName+" where id=''";
+        Cursor res=db.rawQuery(command,null);
+        res.moveToFirst();
+        int rowId=res.getInt(0);
+        res.close();
+        // ...and give it "temp"+rowid
+        String newId="temp"+rowId;
+        cv.put("id",newId);
+        db.update(tableName, cv, "id=''", null);
+        return newId;
+    }
+
+    public void appendMember(Team team,String username){
+        // _id,id,name,description,members
+        String names=team.getMembers();
+        if(names.contains(username)){
+            return;
+        }
+        ContentValues cv=new ContentValues();
+        cv.put(TEAM_COLUMNS[3],names+","+username);
+        String where=TEAM_COLUMNS[0]+"='"+team.getId()+"' AND "+
+                TEAM_COLUMNS[1]+"='"+team.getName()+"' AND "+
+                TEAM_COLUMNS[2]+"='"+team.getDescription()+"' AND "+
+                TEAM_COLUMNS[3]+"='"+team.getMembers()+"'";
+        SQLiteDatabase db=getWritableDatabase();
+        db.update(TEAM_TABLE_NAME, cv, where, null);
     }
 
     public void delete(Event e){
@@ -82,11 +129,31 @@ public class DbHelper extends SQLiteOpenHelper {
                 TEAM_COLUMNS[1]+"='"+t.getName()+"' AND "+
                 TEAM_COLUMNS[2]+"='"+t.getDescription()+"' AND "+
                 TEAM_COLUMNS[3]+"='"+t.getMembers()+"'";
-        delete(where,TEAM_TABLE_NAME);
+        delete(where, TEAM_TABLE_NAME);
 
     }
 
+    public void removeMember(Team team,String username){
+        // _id,id,name,description,members
+        String names=team.getMembers();
+        if(!names.contains(username)){
+            return;
+        }
+        int index=names.indexOf(username);
+        String newNames=names.substring(0,index)+names.substring(index+username.length());
+        ContentValues cv=new ContentValues();
+        cv.put(TEAM_COLUMNS[3],newNames);
+        String where=TEAM_COLUMNS[0]+"='"+team.getId()+"' AND "+
+                TEAM_COLUMNS[1]+"='"+team.getName()+"' AND "+
+                TEAM_COLUMNS[2]+"='"+team.getDescription()+"' AND "+
+                TEAM_COLUMNS[3]+"='"+team.getMembers()+"'";
+
+        SQLiteDatabase db=getWritableDatabase();
+        db.update(TEAM_TABLE_NAME, cv, where, null);
+    }
+
     public void delete(String where,String tableName){
+        // get rowid, then delete, to delete the first occurrence only
         SQLiteDatabase db=getWritableDatabase();
         // which, where, whereArgs, groupBy, having, orderBy, limit
         Cursor cursor = db.query(tableName, new String[]{"rowid"}, where, null, null, null, null, "1");
@@ -124,7 +191,7 @@ public class DbHelper extends SQLiteOpenHelper {
             String name=res.getString(1);
             String description = res.getString(2);
             String members = res.getString(3);
-            teams.add(new Team(name, description, members));
+            teams.add(new Team(id, name, description, members));
             res.moveToNext();
         }
         return teams;
@@ -132,10 +199,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public String[] pullUsers(String teamId){
         SQLiteDatabase db=getReadableDatabase();
-        String[] selectionArgs=new String[]{"id='"+teamId+"'"};
-        Cursor res=db.rawQuery("select * from team",selectionArgs);
+//        String[] selectionArgs=new String[]{"id='"+teamId+"'"};
+        Cursor res=db.rawQuery("select * from team where id='"+teamId+"'",null);
         if(res.moveToFirst()){
-            String userList=res.getString(4);
+            String userList=res.getString(3);
             return userList.split(",");
         }else{
             return null;
@@ -150,6 +217,6 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public void reset(){
-        onUpgrade(getWritableDatabase(),1,1);
+        onUpgrade(getWritableDatabase(), 1, 1);
     }
 }

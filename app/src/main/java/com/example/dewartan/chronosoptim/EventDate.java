@@ -12,7 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 
-public class EventDate {
+public final class EventDate {
     private static final int MAX_DAYS = 90;
     private static final Date maxDay=createMaxDay();
     private static final SimpleDateFormat parser=createFormat();
@@ -24,7 +24,7 @@ public class EventDate {
     }
 
     private static SimpleDateFormat createFormat(){
-        return new SimpleDateFormat("MM-dd-yyyy");
+        return new SimpleDateFormat("MM-dd-yyyy", Locale.US);
     }
 
     public static boolean beforeMax(Event event){
@@ -46,7 +46,7 @@ public class EventDate {
     public static String pretty(String s){
         // "MM-dd-yyyy" ->  "dow: M/d"
         Date date=parse(s);
-        return getDayOfWeek(date) + ": " + new SimpleDateFormat("M/d").format(date);
+        return getDayOfWeek(date) + ": " + new SimpleDateFormat("M/d", Locale.US).format(date);
     }
 
     public static Date parse(String s){
