@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -19,8 +18,11 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String[] EVENT_COLUMNS = new String[]{"id","title","description","eventdate","starttime","endtime","location","subtitle"};
     private static final String[] TEAM_COLUMNS = new String[]{"id","name","description","members"};
 
+    private SyncBuffer syncBuffer;
+
     public DbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        syncBuffer=((ClientDevice)context).getBuffer();
     }
 
     @Override
@@ -36,7 +38,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
         insert(db, new Team("Data Structures", "Cosi 21a Class", "XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
         insert(db, new Team("Patriots Fan Club", "New England Patriots Fan Club", "XiIccSTdEq,hgbigJEsZr,JFxq3s4iaU"));
-
     }
 
     @Override
@@ -64,6 +65,7 @@ public class DbHelper extends SQLiteOpenHelper {
             String newId=safeInsert(db,EVENT_TABLE_NAME,cv);
             event.setId(newId);
         }
+        syncBuffer.send("x=createE&" + event.postForm());
     }
     public void insert(Team team){
         insert(getWritableDatabase(), team);
@@ -77,8 +79,7 @@ public class DbHelper extends SQLiteOpenHelper {
             String newId=safeInsert(db,TEAM_TABLE_NAME,cv);
             team.setId(newId);
         }
-
-//        Log.w("over","a"+team.getId()+team.getName()+"A");
+        syncBuffer.send("x=createT&" + team.postForm());
     }
     public String safeInsert(SQLiteDatabase db,String tableName,ContentValues cv){
         // if no ID, find it...
@@ -89,7 +90,7 @@ public class DbHelper extends SQLiteOpenHelper {
         res.close();
         // ...and give it "temp"+rowid
         String newId="temp"+rowId;
-        cv.put("id",newId);
+        cv.put("id", newId);
         db.update(tableName, cv, "id=''", null);
         return newId;
     }
@@ -108,28 +109,21 @@ public class DbHelper extends SQLiteOpenHelper {
                 TEAM_COLUMNS[3]+"='"+team.getMembers()+"'";
         SQLiteDatabase db=getWritableDatabase();
         db.update(TEAM_TABLE_NAME, cv, where, null);
+        syncBuffer.send("x=createU&id=" + team.getId() + "&name" + username);
     }
 
     public void delete(Event e){
         // _id,id,title,description,eventdate,starttime,endtime,location,subtitle
-        String where=EVENT_COLUMNS[0]+"='"+e.getId()+"' AND "+
-                EVENT_COLUMNS[1]+"='"+e.getTitle()+"' AND "+
-                EVENT_COLUMNS[2]+"='"+e.getDescription()+"' AND "+
-                EVENT_COLUMNS[3]+"='"+e.getDate()+"' AND "+
-                EVENT_COLUMNS[4]+"='"+e.getStartTime()+"' AND "+
-                EVENT_COLUMNS[5]+"='"+e.getEndTime()+"' AND "+
-                EVENT_COLUMNS[6]+"='"+e.getLocation()+"' AND "+
-                EVENT_COLUMNS[7]+"='"+e.getSubtitle()+"'";
+        String where=EVENT_COLUMNS[0] + "='" + e.getId() + "'";
         delete(where, EVENT_TABLE_NAME);
+        syncBuffer.send("x=deleteE&id="+e.getId());
     }
 
     public void delete(Team t){
         // _id,id,name,description,members
-        String where=TEAM_COLUMNS[0]+"='"+t.getId()+"' AND "+
-                TEAM_COLUMNS[1]+"='"+t.getName()+"' AND "+
-                TEAM_COLUMNS[2]+"='"+t.getDescription()+"' AND "+
-                TEAM_COLUMNS[3]+"='"+t.getMembers()+"'";
+        String where=TEAM_COLUMNS[0]+"='"+t.getId()+"'";
         delete(where, TEAM_TABLE_NAME);
+        syncBuffer.send("x=deleteT&id="+t.getId());
 
     }
 
@@ -150,6 +144,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db=getWritableDatabase();
         db.update(TEAM_TABLE_NAME, cv, where, null);
+        syncBuffer.send("x=deleteU&id="+team.getId()+"&name="+username);
     }
 
     public void delete(String where,String tableName){
@@ -216,7 +211,8 @@ public class DbHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public void reset(){
-        onUpgrade(getWritableDatabase(), 1, 1);
-    }
+//    public void reset(){
+//        onUpgrade(getWritableDatabase(), 1, 1);
+//    }
+
 }

@@ -13,53 +13,60 @@ public class SyncBuffer {
 
     private boolean waitingForServer=false;
     private boolean synced=true;
+    private String identifier="client=!&";
 
     public SyncBuffer(ClientDevice device){
         this.device=device;
-        buffer=new ArrayList<>();
-        Log.w("id","a"+device.getLocalId()+"A");
+        buffer=device.recoverActions();
         if(device.getLocalId().equals("")){
-            send("id=!");
+            buffer.add(0,"");
         }else{
-            send("id="+device.getLocalId());
+            identifier="client="+device.getLocalId()+"&";
+        }
+        if(buffer.size()==0){
+            synced=false;
+            sync();
         }
     }
 
     public void send(String action){
-        buffer.add(action);
+        buffer.add(identifier+action);
         synced=false;
         sync();
     }
-
     public void sync(){
         if(synced || waitingForServer){
             return;
         }
-        Log.w("sync","sync");
+        Log.w("sync", "sync");
         waitingForServer=true;
         ServerPing ping=new ServerPing(this);
         ping.execute(buffer);
     }
 
-    public void uponSync(ArrayList<String> responses,ArrayList<String> actions){
-        if(responses==null){
-            Log.w("oh poo","oh dear!");
+    public void uponSync(ArrayList<String> responses,ArrayList<String> requests){
+        if(responses==null || responses.size()==0){
             return;
         }
         Log.w("here",""+responses.size());
         for(String response:responses){
             if(response.startsWith("+user:")){
                 device.setLocalId(response.substring(6));
+                identifier="client="+response.substring(6)+"&";
             }
             device.uponSync(response);
 
         }
-        if(actions.equals(buffer)){
+        if(requests.equals(buffer)){
             buffer.clear();
             waitingForServer=false;
             synced=true;
         }else{
             sync();
         }
+    }
+
+    public void save(){
+        device.coverActions(buffer);
     }
 }

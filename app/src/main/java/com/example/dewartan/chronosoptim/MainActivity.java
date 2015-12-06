@@ -17,7 +17,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-import java.util.prefs.Preferences;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, ClientDevice {
@@ -35,8 +37,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         setContentView(R.layout.layout);
 
         // SyncBuffer
-//        setLocalId("");
-        SyncBuffer syncBuffer=new SyncBuffer(this);
+        syncBuffer=new SyncBuffer(this);
 
         // RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -59,11 +60,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
         // DbHelper and RecyclerView adapters
         DbHelper dbHelper=new DbHelper(this);
-//        dbHelper.reset();
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
         recyclerView.setAdapter(evAdapter);
-//        syncBuffer.send("hello!");
 
         // Swipe-to-delete functionality
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -147,11 +146,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     }
 
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        syncBuffer.save();
+    }
+
     public void uponSync(String response){
         // callback for SyncBuffer
         Log.w("hey", response);
     }
-
     public void setLocalId(String userId){
         SharedPreferences.Editor editor=getPreferences(0).edit();
         editor.putString("userId",userId);
@@ -161,6 +165,38 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         SharedPreferences settings=getPreferences(0);
         return settings.getString("userId","");
     }
+    public void coverActions(ArrayList<String> actions){
+        SharedPreferences.Editor editor=getPreferences(0).edit();
+        Set<String> set=new HashSet<>();
+        for(int i=0;i<actions.size();i++){
+            set.add(actions.get(i) + "_" + i);
+        }
+        editor.putStringSet("actionBuffer", set);
+        editor.commit();
+    }
+    public ArrayList<String> recoverActions(){
+        SharedPreferences settings=getPreferences(0);
+        if(settings==null){
+            return new ArrayList<>();
+        }
+        Set<String> set=settings.getStringSet("actionBuffer", null);
+        // create and fluff array list
+        ArrayList<String> actions=new ArrayList<>();
+        for(int i=0;i<set.size();i++){
+            actions.add(null);
+        }
+        // now add actions back, in order
+        for(String action:set){
+            int underScoreIndex=action.lastIndexOf("_");
+            int index=Integer.parseInt(action.substring(underScoreIndex+1));
+            actions.set(index,action.substring(0,underScoreIndex));
+        }
+        return actions;
+    }
+    public SyncBuffer getBuffer(){
+        return syncBuffer;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

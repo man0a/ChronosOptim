@@ -91,4 +91,8 @@ public class Team implements Parcelable{
         dest.writeString(description);
         dest.writeString(members);
     }
+
+    public String postForm(){
+        return String.format("id=%s&name=%s&description=%s&members=%s",id,name,description,members);
+    }
 }

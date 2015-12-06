@@ -65,7 +65,6 @@ public class ServerPing extends AsyncTask<ArrayList<String>, Void, ArrayList<Str
     private ArrayList<String> serverAbsorb(InputStream in){
         Scanner read=new Scanner(in);
         ArrayList<String> responses=new ArrayList<>();
-//        while(read.hasNextLine()){
         String response;
         while(read.hasNextLine()){
             response=read.nextLine();

@@ -117,6 +117,11 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeString(subtitle);
     }
+
+    public String postForm(){
+        return String.format("id=%s&title=%s&description=%s&date=%s&startTime=%s&endTime=%s&location=%s&subtitle=%s",
+            id,title,description,date,startTime,endTime,location,subtitle);
+    }
 }
 
 
