@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -49,7 +50,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public void clear() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+ EVENT_TABLE_NAME);
+        db.execSQL("DELETE FROM " + EVENT_TABLE_NAME);
         db.execSQL("DELETE FROM " + TEAM_TABLE_NAME);
     }
 
@@ -95,6 +96,13 @@ public class DbHelper extends SQLiteOpenHelper {
         return newId;
     }
 
+    public void updateId(String rotten,String fresh,String tableName) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", fresh);
+        db.update(tableName, cv, "id='" + rotten + "'", null);
+    }
+
     public void appendMember(Team team,String username){
         // _id,id,name,description,members
         String names=team.getMembers();
@@ -109,7 +117,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 TEAM_COLUMNS[3]+"='"+team.getMembers()+"'";
         SQLiteDatabase db=getWritableDatabase();
         db.update(TEAM_TABLE_NAME, cv, where, null);
-        syncBuffer.send("x=createU&id=" + team.getId() + "&name" + username);
+        syncBuffer.send("x=createM&id=" + team.getId() + "&name" + username);
     }
 
     public void delete(Event e){
@@ -144,7 +152,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db=getWritableDatabase();
         db.update(TEAM_TABLE_NAME, cv, where, null);
-        syncBuffer.send("x=deleteU&id="+team.getId()+"&name="+username);
+        syncBuffer.send("x=deleteM&id="+team.getId()+"&name="+username);
     }
 
     public void delete(String where,String tableName){
@@ -211,8 +219,8 @@ public class DbHelper extends SQLiteOpenHelper {
         return res;
     }
 
-//    public void reset(){
-//        onUpgrade(getWritableDatabase(), 1, 1);
-//    }
+    public void reset(){
+        onUpgrade(getWritableDatabase(), 1, 1);
+    }
 
 }

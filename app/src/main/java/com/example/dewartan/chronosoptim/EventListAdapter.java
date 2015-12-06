@@ -98,6 +98,16 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         initHeaders();
     }
 
+    public void setId(String rotten,String fresh){
+        dbHelper.updateId(rotten, fresh, "event");
+        for(Event event:dbEvents){
+            if(event.getId().equals(rotten)){
+                event.setId(fresh);
+                return;
+            }
+        }
+    }
+
     @Override
     public EventListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = null;

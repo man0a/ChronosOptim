@@ -37,7 +37,7 @@ public class AddTeamActivity extends AppCompatActivity {
         Team team=new Team(
             mName.getText().toString(),
             mDescription.getText().toString(),
-            null
+            ""
         );
         Intent backIntent=new Intent();
         backIntent.putExtra("teamObj",team);

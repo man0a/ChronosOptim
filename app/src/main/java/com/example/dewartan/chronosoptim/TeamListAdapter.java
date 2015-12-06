@@ -45,6 +45,16 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    public void setId(String rotten,String fresh){
+        dbHelper.updateId(rotten,fresh,"team");
+        for(Team team:teams){
+            if(team.getId().equals(rotten)){
+                team.setId(fresh);
+                return;
+            }
+        }
+    }
+
     @Override
     public TeamListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_view, parent, false);

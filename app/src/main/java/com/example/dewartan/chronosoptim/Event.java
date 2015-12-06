@@ -57,9 +57,6 @@ public class Event implements Parcelable {
         }
     };
 
-
-
-
     public ContentValues content(){
         ContentValues contentValues = new ContentValues();
         contentValues.put("id",id);

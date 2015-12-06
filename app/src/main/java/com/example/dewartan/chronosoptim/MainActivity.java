@@ -25,6 +25,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, ClientDevice {
 
     private SyncBuffer syncBuffer;
+    private DbHelper dbHelper;
     private EventListAdapter evAdapter;
     private TeamListAdapter teamAdapter;
     private RecyclerView recyclerView;
@@ -59,9 +60,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         tabLayout.addTab(tabLayout.newTab().setText(this.getString(R.string.teams)));
 
         // DbHelper and RecyclerView adapters
-        DbHelper dbHelper=new DbHelper(this);
+        dbHelper=new DbHelper(this);
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
+        evAdapter.reset();
+        evAdapter.refresh();
+        teamAdapter.refresh();
         recyclerView.setAdapter(evAdapter);
 
         // Swipe-to-delete functionality
@@ -154,8 +158,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     public void uponSync(String response){
         // callback for SyncBuffer
-        Log.w("hey", response);
+        if(response.startsWith("+user:") || response.equals(":)")){
+            return;
+        }
+        if(response.startsWith("+event:")){
+            String[] ids=response.substring(7).split(",");
+            evAdapter.setId(ids[0],ids[1]);
+        }else if(response.startsWith("+team:")){
+            String[] ids=response.substring(6).split(",");
+            teamAdapter.setId(ids[0],ids[1]);
+        }
+
+        Log.w("phey", response);
     }
+
     public void setLocalId(String userId){
         SharedPreferences.Editor editor=getPreferences(0).edit();
         editor.putString("userId",userId);
@@ -176,10 +192,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     }
     public ArrayList<String> recoverActions(){
         SharedPreferences settings=getPreferences(0);
-        if(settings==null){
+        Set<String> set=settings.getStringSet("actionBuffer", null);
+        if(set==null){
             return new ArrayList<>();
         }
-        Set<String> set=settings.getStringSet("actionBuffer", null);
         // create and fluff array list
         ArrayList<String> actions=new ArrayList<>();
         for(int i=0;i<set.size();i++){

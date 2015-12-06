@@ -17,20 +17,21 @@ public class SyncBuffer {
 
     public SyncBuffer(ClientDevice device){
         this.device=device;
+        device.coverActions(new ArrayList<String>());
         buffer=device.recoverActions();
         if(device.getLocalId().equals("")){
             buffer.add(0,"");
         }else{
             identifier="client="+device.getLocalId()+"&";
         }
-        if(buffer.size()==0){
+        if(buffer.size()>0){
             synced=false;
             sync();
         }
     }
 
     public void send(String action){
-        buffer.add(identifier+action);
+        buffer.add(identifier + action);
         synced=false;
         sync();
     }
@@ -38,7 +39,7 @@ public class SyncBuffer {
         if(synced || waitingForServer){
             return;
         }
-        Log.w("sync", "sync");
+        Log.w("psync", "sync");
         waitingForServer=true;
         ServerPing ping=new ServerPing(this);
         ping.execute(buffer);
@@ -48,7 +49,6 @@ public class SyncBuffer {
         if(responses==null || responses.size()==0){
             return;
         }
-        Log.w("here",""+responses.size());
         for(String response:responses){
             if(response.startsWith("+user:")){
                 device.setLocalId(response.substring(6));
