@@ -18,7 +18,8 @@ public class SyncBuffer {
     public SyncBuffer(ClientDevice device){
         this.device=device;
         device.coverActions(new ArrayList<String>());
-        buffer=device.recoverActions();
+//        buffer=device.recoverActions();
+        buffer=new ArrayList<>();
         if(device.getLocalId().equals("")){
             buffer.add(0,"");
         }else{
@@ -46,6 +47,7 @@ public class SyncBuffer {
     }
 
     public void uponSync(ArrayList<String> responses,ArrayList<String> requests){
+        waitingForServer=false;
         if(responses==null || responses.size()==0){
             return;
         }
@@ -59,7 +61,6 @@ public class SyncBuffer {
         }
         if(requests.equals(buffer)){
             buffer.clear();
-            waitingForServer=false;
             synced=true;
         }else{
             sync();

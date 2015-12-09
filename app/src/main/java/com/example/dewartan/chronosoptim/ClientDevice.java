@@ -8,5 +8,4 @@ public interface ClientDevice{
     String getLocalId();
     void coverActions(ArrayList<String> actions);
     ArrayList<String> recoverActions();
-    SyncBuffer getBuffer();
 }

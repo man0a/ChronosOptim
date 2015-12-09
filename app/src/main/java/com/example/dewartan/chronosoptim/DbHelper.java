@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -21,9 +20,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private SyncBuffer syncBuffer;
 
-    public DbHelper(Context context){
+    public DbHelper(Context context,SyncBuffer syncBuffer){// MainActivity
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        syncBuffer=((ClientDevice)context).getBuffer();
+        this.syncBuffer=syncBuffer;
+    }
+    public DbHelper(Context context){// all other Activities
+        this(context, null);
     }
 
     @Override
@@ -31,10 +33,10 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("create table event ( id text, title text, description text, eventdate text, starttime text, endtime text, location text, subtitle text)");
         db.execSQL("create table team ( id text, name text, description text, members text)");
 
-        insert(db,new Event("MAD Project Meeting", "Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "Fix views on the events page"));
-        insert(db,new Event("NanoTwitter", "SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "105B NanoTwitter Project"));
-        insert(db,new Event("Food", "Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Lunch with Bob"));
-        insert(db,new Event("Interview", "Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview with Company"));
+        insert(db, new Event("MAD Project Meeting", "Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "Fix views on the events page"));
+        insert(db, new Event("NanoTwitter", "SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "105B NanoTwitter Project"));
+        insert(db, new Event("Food", "Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Lunch with Bob"));
+        insert(db, new Event("Interview", "Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview with Company"));
         insert(db, new Event("Date Night", "Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Dinner with Fay"));
 
         insert(db, new Team("Data Structures", "Cosi 21a Class", "XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
@@ -80,6 +82,7 @@ public class DbHelper extends SQLiteOpenHelper {
             String newId=safeInsert(db,TEAM_TABLE_NAME,cv);
             team.setId(newId);
         }
+
         syncBuffer.send("x=createT&" + team.postForm());
     }
     public String safeInsert(SQLiteDatabase db,String tableName,ContentValues cv){

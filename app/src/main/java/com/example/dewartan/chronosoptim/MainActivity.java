@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.w("bro","drop");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
 
@@ -60,14 +62,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         tabLayout.addTab(tabLayout.newTab().setText(this.getString(R.string.teams)));
 
         // DbHelper and RecyclerView adapters
-        dbHelper=new DbHelper(this);
+        dbHelper=new DbHelper(this,syncBuffer);
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
-        evAdapter.reset();
-        evAdapter.refresh();
-        teamAdapter.refresh();
+        resetAppData();
         recyclerView.setAdapter(evAdapter);
-
         // Swipe-to-delete functionality
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -149,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         });
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        syncBuffer.sync();
+    }
 
     @Override
     protected void onPause(){
@@ -158,23 +162,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     public void uponSync(String response){
         // callback for SyncBuffer
+        Log.w("phey", response);
         if(response.startsWith("+user:") || response.equals(":)")){
             return;
         }
         if(response.startsWith("+event:")){
             String[] ids=response.substring(7).split(",");
-            evAdapter.setId(ids[0],ids[1]);
+            evAdapter.setId(ids[0], ids[1]);
         }else if(response.startsWith("+team:")){
             String[] ids=response.substring(6).split(",");
-            teamAdapter.setId(ids[0],ids[1]);
+            teamAdapter.setId(ids[0], ids[1]);
         }
 
-        Log.w("phey", response);
     }
 
     public void setLocalId(String userId){
         SharedPreferences.Editor editor=getPreferences(0).edit();
-        editor.putString("userId",userId);
+        editor.putString("userId", userId);
         editor.commit();
     }
     public String getLocalId(){
@@ -209,10 +213,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         }
         return actions;
     }
-    public SyncBuffer getBuffer(){
-        return syncBuffer;
-    }
 
+    private void resetAppData(){
+        dbHelper.reset();
+        evAdapter.reset();
+        teamAdapter.reset();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

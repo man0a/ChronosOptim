@@ -31,7 +31,7 @@ public class ServerPing extends AsyncTask<ArrayList<String>, Void, ArrayList<Str
     @Override
     protected ArrayList<String> doInBackground(ArrayList<String>... data){
         // worker thread
-        actionBuffer=data[0];
+        actionBuffer=new ArrayList<>(data[0]);
 
         try {
             // hello
@@ -82,7 +82,7 @@ public class ServerPing extends AsyncTask<ArrayList<String>, Void, ArrayList<Str
         String str="data=";
         for(String action:actionBuffer){
             str+=action.replace('&','|')+"||";
-            Log.w("pemit", action);
+//            Log.w("pemit", action);
         }
         writer.println(str);
         writer.flush();

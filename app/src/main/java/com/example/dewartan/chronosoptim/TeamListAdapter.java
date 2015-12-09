@@ -38,7 +38,8 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
     }
 
     public void reset(){
-        dbHelper.reset();
+        teams=dbHelper.pullTeams();
+        refresh();
     }
 
     public void refresh(){
@@ -67,6 +68,7 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
         holder.textView.setText(team.getName());
         holder.subView.setText(team.getDescription());
         holder.textView.setTag(team);
+
     }
 
     public Object getItem(int position) { return teams.get(position); }
