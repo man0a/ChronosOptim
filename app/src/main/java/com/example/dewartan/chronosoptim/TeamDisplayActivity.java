@@ -1,6 +1,8 @@
 package com.example.dewartan.chronosoptim;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,11 +12,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.LinkedList;
+
 /**
  * Created by Prakhar on 12/4/2015.
  */
 
-public class TeamDisplayActivity extends AppCompatActivity {
+public class TeamDisplayActivity extends AppCompatActivity implements ClientDevice{
     private Toolbar actionBarToolBar;
     private TextView name, description, toolbarTitle;
     private Team team;
@@ -30,7 +34,10 @@ public class TeamDisplayActivity extends AppCompatActivity {
         name = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
         ListView userList=(ListView) findViewById(R.id.user_list);
-        userAdapter=new UserListAdapter(this,team);
+
+        SyncBuffer syncBuffer=new SyncBuffer(this);
+        DbHelper dbHelper=new DbHelper(this,syncBuffer);
+        userAdapter=new UserListAdapter(this,team,dbHelper);
         userList.setAdapter(userAdapter);
 
         actionBarToolBar = (Toolbar) findViewById(R.id.empty_bar);
@@ -48,6 +55,20 @@ public class TeamDisplayActivity extends AppCompatActivity {
 
     }
 
+    public void uponSync(String response){}
+    public void setLocalId(String userId){
+        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString("userId", userId);
+        editor.commit();
+    }
+    public String getLocalId(){
+        SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(this);
+        return settings.getString("userId","!");
+    }
+
+    public void coverActions(LinkedList<String> actions){}
+    public LinkedList<String> recoverActions(){return new LinkedList<>();}
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()) {
@@ -61,13 +82,15 @@ public class TeamDisplayActivity extends AppCompatActivity {
     public void add(View view){
         EditText editor=(EditText) findViewById(R.id.type_user);
         String username=editor.getText().toString();
-        userAdapter.append(username);
+        editor.setText("");
+        if(!username.equals("")){
+            userAdapter.append(username);
+        }
     }
 
     public void delete(View view){
         View listItem=(View)view.getParent();
         String username=(String)listItem.getTag();
-        Log.w("issue",username);
         userAdapter.remove(username);
     }
 }

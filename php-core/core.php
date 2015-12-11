@@ -10,105 +10,148 @@ require_once("./optim.php");
 main();
 
 function main(){
-	if(!isset($_POST["id"])){
-		echo "bogus";
-		return;
+	switch($_SERVER["REQUEST_METHOD"]){
+		case 'GET':$input=trim($_GET["data"]);break;
+		case 'POST':$input=trim($_POST["data"]);break;
+		default:echo "Unsupported request type. Do GET or POST.";return;
 	}
 
-	if(strcmp(trim($_POST["id"]),"!")==0){
+	$buffer=explode("||",$input);
+	array_pop($buffer);
+	foreach($buffer as $str){
+		$str=str_replace("|","&",$str);
+		// echo $str;
+		parse_str($str,$post);
+		handle($post);
+		echo "||";
+	}
+}
+function handle($post){
+	if(!isset($post["client"])){
+		// malformed POST request
+		// echo $post;
+		echo "Malformed POST request: Please specify a 'client' key.";
+		return;
+	}
+	$client=trim($post["client"]);
+	if(strcmp($client,"!")==0){
+		// client not yet registered, respond 
 		$user=ParseObject::create("Users");		
 		$user->save();
 		$objId=$user->getObjectId();
 		$user->set("uname",$objId);
 		$user->save();
 		echo "+user:".$objId;
-	}else{
-		echo "solid";
+		return;
 	}
-	// $weights=optim("GfCEpAfie6");
-	// foreach($weights as $weight){
-	// 	$str=$weight->toStr();
-	// 	echo $str."<br>";
-	// }
-// 	$x = $_GET["action"];
-// 	echo "pass action ";
-
-// 	$user = array("Users", "uname", "userID", "members");	
-// 	$event = array("Event", "userID", "location", "date", "startTime", "endTime", "description", "title", "subtitle");
-// 	$user = array("Users", "uname", "userID", "password",);
-// 	$fields=array($event,$user,$channel,$broadcast);
+	if(!isset($post["x"])){
+		// malformed POST request
+		echo "Malformed POST request: 'client' key but no 'x' key.";
+		return;
+	}
+	$type=trim($post["x"]);
+	switch($type){
+		case "createE":addEvent($post);break;
+		case "createT":addTeam($post);break;
+		case "createM":addMember($post);break;
+		case "deleteE":delEvent($post);break;
+		case "deleteT":delTeam($post);break;
+		case "deleteM":delMember($post);break;
+		// case "algo":
+		// $weights=optim("GfCEpAfie6");
+		// foreach($weights as $weight){
+		// 	$str=$weight->toStr();
+		// 	echo $str."<br>";
+		// }
+			// optim();break;
+		default:
+			echo "Malformed POST request: invalid 'x' value.";
+			return;
+	}
+	
 
 }
 
-function add($array) {
-	
-	$y = ParseObject::create($array[0]);
-	
-	if($array[0] == "Event" or $array[0] == "Channels" or $array[0] == "Broadcasts") {
-		linkId($array[0], $y);
-	} else {
-		$y->set($column1, $_GET[$column1]);
+
+
+// ADD METHODS
+function addEvent($post) {
+	$fields=array("title","description","date","startTime","endTime","location","subtitle");
+	$event=ParseObject::create("Event");
+	foreach($fields as $field){
+		$event->set($field,trim($post[$field]));
 	}
-	
-	for($i = 2; $i < count($array); $i++) {
-		$y->set($array[$i], $_GET[$array[$i]]); 
+	$event->set("userId",trim($post["client"]));
+	$event->save();
+	$objId=$event->getObjectId();
+	$oldId=trim($post["id"]);
+	echo "+event:".$oldId.",".$objId;
+}
+function addTeam($post) {
+	$team=ParseObject::create("Team");
+	$team->set("name",trim($post["name"]));
+	$team->set("description",trim($post["description"]));
+	$team->setArray("members",array());
+	$team->set("userId",trim($post["client"]));
+	$team->save();
+	$oldId=trim($post["id"]);
+	$objId=$team->getObjectId();
+	echo "+team:".$oldId.",".$objId;
+}
+function addMember($post) {
+	$query=new ParseQuery("Team");
+	try{
+		$team=$query->get(trim($post["id"]));
+	}catch(Exception $ex){
+		echo "Failed query.";
+		return;
 	}
-	$y->save();
+	$team->add("members",array(trim($post["name"])));
+	$team->save();
+	echo ":)";
 }
 
-function del($tablename) {
-	$objId = $_GET["objectId"];
-	$query = new ParseQuery($tablename);
+
+
+
+// DELETE METHODS
+function delEvent($post){
+	$objId = trim($post["id"]);
+	$query = new ParseQuery("Event");
 	
 	try {
   		$y = $query->get($objId);
-  		$y->destroy();
-  		echo "User deleted successfully";
   	} catch (Exception $ex) {
-  		echo "Error: Not able to find Id";
-  	} 
+  		echo "Could not query: event ".$objId;
+  		return;
+  	}
+	$y->destroy();
+	echo ":)".$objId;
 }
-
-function change($array) {
-	$objId = $_GET["objectId"];
-	$query = new ParseQuery($array[0]); 
-			
+function delTeam($post) {
+	$objId = trim($post["id"]);
+	$query = new ParseQuery("Team");
+	
 	try {
-		$y = $query->get($objId);
-		
-		for($i = 1; $i < count($array); $i++) {
-			$fname=$array[$i];
-			if(isset($_GET[$fname]) && !empty($_GET[$fname])) {
-				$y->set($fname, $_GET[$fname]);
-			}
-		}
-		
-		$y->save();
-	} catch (Exception $ex) {
-		echo "Error: Not available";
-	}
+  		$y = $query->get($objId);
+  	} catch (Exception $ex) {
+  		echo "Could not query: team ".$objId;
+  		return;
+  	}
+	$y->destroy();
+	echo ":)".$objId;
 }
-
-
-
-
-// $testObject = ParseObject::create("TestObject");
-// $testObject->set("foo", $_GET["action"]);
-// $testObject->save();
-// // get the object ID
-// echo $testObject->getObjectId();
-
-
-// $obj=ParseObject::create("Event");
-// $obj->set("location","Vertica");
-// $obj->set("startTime","Vertica");
-// $obj->set("endTime","Vertica");
-// $obj->set("userId","Yy5uFVA51l");
-// $obj->set("date","12-03-2015");
-// $obj->set("subtitle","");
-// $obj->set("description","");
-// $obj->set("title","Office Hours");
-// $obj->save();
-// echo $obj->getObjectId()
-
+function delMember($post) {
+	$objId=trim($post["id"]);
+	$uname=trim($post["name"]);
+	$query=new ParseQuery("Team");
+	try {
+  		$y=$query->get($objId);
+  		echo ":)";
+  	} catch (Exception $ex) {
+  		echo "Failed query.";
+  	}
+  	$y->remove("members",$uname);
+  	$y->save();
+}
 ?>

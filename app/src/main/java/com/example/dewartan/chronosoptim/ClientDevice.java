@@ -1,11 +1,11 @@
 package com.example.dewartan.chronosoptim;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public interface ClientDevice{
     void uponSync(String response);
     void setLocalId(String userId);
     String getLocalId();
-    void coverActions(ArrayList<String> actions);
-    ArrayList<String> recoverActions();
+    void coverActions(LinkedList<String> actions);
+    LinkedList<String> recoverActions();
 }

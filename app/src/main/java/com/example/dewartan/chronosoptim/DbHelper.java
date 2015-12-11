@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -24,23 +25,20 @@ public class DbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.syncBuffer=syncBuffer;
     }
-    public DbHelper(Context context){// all other Activities
-        this(context, null);
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table event ( id text, title text, description text, eventdate text, starttime text, endtime text, location text, subtitle text)");
         db.execSQL("create table team ( id text, name text, description text, members text)");
 
-        insert(db, new Event("MAD Project Meeting", "Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "Fix views on the events page"));
-        insert(db, new Event("NanoTwitter", "SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "105B NanoTwitter Project"));
-        insert(db, new Event("Food", "Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Lunch with Bob"));
-        insert(db, new Event("Interview", "Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview with Company"));
-        insert(db, new Event("Date Night", "Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Dinner with Fay"));
-
-        insert(db, new Team("Data Structures", "Cosi 21a Class", "XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
-        insert(db, new Team("Patriots Fan Club", "New England Patriots Fan Club", "XiIccSTdEq,hgbigJEsZr,JFxq3s4iaU"));
+//        insert(db, new Event("MAD Project Meeting", "Vertica", "12-12-2015", "17:00", "18:00", "Meeting, We will go over the different views that need fixing and additionally, go over the backend server stuff", "Fix views on the events page"));
+//        insert(db, new Event("NanoTwitter", "SSC", "12-12-2015", "13:00", "14:00", "We need to finalize the columns in the migration table and different routes for calling CRUD operations", "105B NanoTwitter Project"));
+//        insert(db, new Event("Food", "Shapiro", "12-22-2015", "11:30", "12:30", "Meet with bob to discuss the different internet plans Comcast has to offer for the apartment", "Lunch with Bob"));
+//        insert(db, new Event("Interview", "Cambridge, MA", "12-24-2015", "18:00", "19:00", "Prepare for interview with company x, Things to do: research products, pratice questions, and iron clothes ", "Interview with Company"));
+//        insert(db, new Event("Date Night", "Home", "12-31-2015", "18:00", "19:00", "Bring korean pot, Things to grab at Shaws: Chocolate & Flowers ", "Dinner with Fay"));
+//
+//        insert(db, new Team("Data Structures", "Cosi 21a Class", "XiIccSTdEq,hgbigJEsZr,Yy5uFVA51l"));
+//        insert(db, new Team("Patriots Fan Club", "New England Patriots Fan Club", "XiIccSTdEq,hgbigJEsZr,JFxq3s4iaU"));
     }
 
     @Override
@@ -68,14 +66,14 @@ public class DbHelper extends SQLiteOpenHelper {
             String newId=safeInsert(db,EVENT_TABLE_NAME,cv);
             event.setId(newId);
         }
-        syncBuffer.send("x=createE&" + event.postForm());
+        syncBuffer.send("&x=createE&" + event.postForm());
     }
     public void insert(Team team){
         insert(getWritableDatabase(), team);
     }
     public void insert(SQLiteDatabase db,Team team){
         ContentValues cv=team.content();
-        boolean fixId=(((String)cv.get("id")).length()==0);
+        boolean fixId=((String)cv.get("id")).isEmpty();
         // if has ID insert and exit
         db.insert(TEAM_TABLE_NAME, null, cv);
         if(fixId){
@@ -83,7 +81,7 @@ public class DbHelper extends SQLiteOpenHelper {
             team.setId(newId);
         }
 
-        syncBuffer.send("x=createT&" + team.postForm());
+        syncBuffer.send("&x=createT&" + team.postForm());
     }
     public String safeInsert(SQLiteDatabase db,String tableName,ContentValues cv){
         // if no ID, find it...
@@ -108,54 +106,46 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public void appendMember(Team team,String username){
         // _id,id,name,description,members
-        String names=team.getMembers();
-        if(names.contains(username)){
+        if(team.hasMember(username)){
             return;
         }
+        team.appendMember(username);
         ContentValues cv=new ContentValues();
-        cv.put(TEAM_COLUMNS[3],names+","+username);
-        String where=TEAM_COLUMNS[0]+"='"+team.getId()+"' AND "+
-                TEAM_COLUMNS[1]+"='"+team.getName()+"' AND "+
-                TEAM_COLUMNS[2]+"='"+team.getDescription()+"' AND "+
-                TEAM_COLUMNS[3]+"='"+team.getMembers()+"'";
+        cv.put(TEAM_COLUMNS[3],team.getMembers());
+        String where="id='"+team.getId()+"'";
         SQLiteDatabase db=getWritableDatabase();
         db.update(TEAM_TABLE_NAME, cv, where, null);
-        syncBuffer.send("x=createM&id=" + team.getId() + "&name" + username);
+        syncBuffer.send("&x=createM&id=" + team.getId() + "&name=" + username);
     }
 
     public void delete(Event e){
         // _id,id,title,description,eventdate,starttime,endtime,location,subtitle
         String where=EVENT_COLUMNS[0] + "='" + e.getId() + "'";
         delete(where, EVENT_TABLE_NAME);
-        syncBuffer.send("x=deleteE&id="+e.getId());
+        syncBuffer.send("&x=deleteE&id=" + e.getId());
     }
 
     public void delete(Team t){
         // _id,id,name,description,members
         String where=TEAM_COLUMNS[0]+"='"+t.getId()+"'";
         delete(where, TEAM_TABLE_NAME);
-        syncBuffer.send("x=deleteT&id="+t.getId());
+        syncBuffer.send("&x=deleteT&id="+t.getId());
 
     }
 
     public void removeMember(Team team,String username){
         // _id,id,name,description,members
-        String names=team.getMembers();
-        if(!names.contains(username)){
+        if(!team.hasMember(username)){
             return;
         }
-        int index=names.indexOf(username);
-        String newNames=names.substring(0,index)+names.substring(index+username.length());
+        team.removeMember(username);
+        String newNames=team.getMembers();
         ContentValues cv=new ContentValues();
-        cv.put(TEAM_COLUMNS[3],newNames);
-        String where=TEAM_COLUMNS[0]+"='"+team.getId()+"' AND "+
-                TEAM_COLUMNS[1]+"='"+team.getName()+"' AND "+
-                TEAM_COLUMNS[2]+"='"+team.getDescription()+"' AND "+
-                TEAM_COLUMNS[3]+"='"+team.getMembers()+"'";
-
+        cv.put(TEAM_COLUMNS[3], newNames);
+        String where="id='"+team.getId()+"'";
         SQLiteDatabase db=getWritableDatabase();
         db.update(TEAM_TABLE_NAME, cv, where, null);
-        syncBuffer.send("x=deleteM&id="+team.getId()+"&name="+username);
+        syncBuffer.send("&x=deleteM&id="+team.getId()+"&name="+username);
     }
 
     public void delete(String where,String tableName){
@@ -205,11 +195,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public String[] pullUsers(String teamId){
         SQLiteDatabase db=getReadableDatabase();
-//        String[] selectionArgs=new String[]{"id='"+teamId+"'"};
         Cursor res=db.rawQuery("select * from team where id='"+teamId+"'",null);
         if(res.moveToFirst()){
             String userList=res.getString(3);
-            return userList.split(",");
+            Log.w("here","pull users "+userList);
+            if(userList.isEmpty()){
+                return new String[]{};
+            }else{
+                return userList.split(",");
+            }
         }else{
             return null;
         }

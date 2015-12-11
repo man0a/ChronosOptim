@@ -1,70 +1,57 @@
 package com.example.dewartan.chronosoptim;
 
-import android.util.Log;
-
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by Prakhar on 12/5/2015.
  */
 public class SyncBuffer {
-    private ArrayList<String> buffer;
+    private LinkedList<String> buffer;
     private ClientDevice device;
 
     private boolean waitingForServer=false;
-    private boolean synced=true;
-    private String identifier="client=!&";
+    private String identifier;
 
     public SyncBuffer(ClientDevice device){
         this.device=device;
-        device.coverActions(new ArrayList<String>());
-//        buffer=device.recoverActions();
-        buffer=new ArrayList<>();
-        if(device.getLocalId().equals("")){
-            buffer.add(0,"");
-        }else{
-            identifier="client="+device.getLocalId()+"&";
-        }
-        if(buffer.size()>0){
-            synced=false;
-            sync();
-        }
+        device.coverActions(new LinkedList<String>());
+        buffer=device.recoverActions();
+        identifier="client="+device.getLocalId();
+        sync();
     }
 
     public void send(String action){
-        buffer.add(identifier + action);
-        synced=false;
+        buffer.offer(identifier + action);
         sync();
     }
+
     public void sync(){
-        if(synced || waitingForServer){
+        if(buffer.isEmpty() || waitingForServer){
             return;
         }
-        Log.w("psync", "sync");
         waitingForServer=true;
         ServerPing ping=new ServerPing(this);
-        ping.execute(buffer);
+        ping.execute(new ArrayList<>(buffer));
     }
 
-    public void uponSync(ArrayList<String> responses,ArrayList<String> requests){
-        waitingForServer=false;
-        if(responses==null || responses.size()==0){
+    public void uponSync(ArrayList<String> responses){
+        if(responses==null){
             return;
         }
         for(String response:responses){
+            buffer.poll();// request has response, drop it
             if(response.startsWith("+user:")){
                 device.setLocalId(response.substring(6));
-                identifier="client="+response.substring(6)+"&";
+                identifier="client="+response.substring(6);
             }
             device.uponSync(response);
 
         }
-        if(requests.equals(buffer)){
-            buffer.clear();
-            synced=true;
-        }else{
-            sync();
-        }
+
+        save();
+        waitingForServer=false;
+        sync();
     }
 
     public void save(){

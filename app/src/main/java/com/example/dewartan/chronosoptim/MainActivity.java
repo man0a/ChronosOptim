@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,14 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.w("bro","drop");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         dbHelper=new DbHelper(this,syncBuffer);
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
-        resetAppData();
+//        resetAppData();
         recyclerView.setAdapter(evAdapter);
         // Swipe-to-delete functionality
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -162,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     public void uponSync(String response){
         // callback for SyncBuffer
-        Log.w("phey", response);
         if(response.startsWith("+user:") || response.equals(":)")){
             return;
         }
@@ -177,16 +175,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
     }
 
     public void setLocalId(String userId){
-        SharedPreferences.Editor editor=getPreferences(0).edit();
+        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.putString("userId", userId);
         editor.commit();
     }
     public String getLocalId(){
-        SharedPreferences settings=getPreferences(0);
-        return settings.getString("userId","");
+        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(this);
+        return settings.getString("userId","!");
     }
-    public void coverActions(ArrayList<String> actions){
-        SharedPreferences.Editor editor=getPreferences(0).edit();
+    public void coverActions(LinkedList<String> actions){
+        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
         Set<String> set=new HashSet<>();
         for(int i=0;i<actions.size();i++){
             set.add(actions.get(i) + "_" + i);
@@ -194,16 +192,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         editor.putStringSet("actionBuffer", set);
         editor.commit();
     }
-    public ArrayList<String> recoverActions(){
-        SharedPreferences settings=getPreferences(0);
+    public LinkedList<String> recoverActions(){
+        LinkedList<String> actions=new LinkedList<>();
+        if(getLocalId().equals("!")){
+            actions.offer("client=!");
+        }
+
+        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> set=settings.getStringSet("actionBuffer", null);
-        if(set==null){
-            return new ArrayList<>();
+        if(set==null || set.isEmpty()){
+            return actions;
         }
         // create and fluff array list
-        ArrayList<String> actions=new ArrayList<>();
         for(int i=0;i<set.size();i++){
-            actions.add(null);
+            actions.offer(null);
         }
         // now add actions back, in order
         for(String action:set){

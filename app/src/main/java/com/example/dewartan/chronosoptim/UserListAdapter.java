@@ -1,6 +1,7 @@
 package com.example.dewartan.chronosoptim;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,8 @@ public class UserListAdapter extends BaseAdapter {
     private ArrayList<String> userList;
     private DbHelper dbHelper;
 
-    public UserListAdapter(Context context,Team team){
-        this.dbHelper=new DbHelper(context);
+    public UserListAdapter(Context context,Team team,DbHelper dbHelper){
+        this.dbHelper=dbHelper;
         this.team=team;
         String[] users=dbHelper.pullUsers(team.getId());
         userList=new ArrayList<>();
@@ -41,22 +42,22 @@ public class UserListAdapter extends BaseAdapter {
         if(view==null) {
             view=LayoutInflater.from(parent.getContext()).inflate(R.layout.user_view, parent, false);
         }
-        String uname=getItem(index);
+        String username=getItem(index);
         TextView tw=(TextView) view.findViewById(R.id.uname);
-        tw.setText(uname);
-        view.setTag(uname);
+        tw.setText(username);
+        view.setTag(username);
         return view;
     }
 
-    public void append(String uname){
-        dbHelper.appendMember(team,uname);
-        userList.add(uname);
+    public void append(String username){
+        dbHelper.appendMember(team,username);
+        userList.add(username);
         notifyDataSetChanged();
     }
 
-    public void remove(String uname){
-        dbHelper.removeMember(team,uname);
-        userList.remove(uname);
+    public void remove(String username){
+        dbHelper.removeMember(team,username);
+        userList.remove(username);
         notifyDataSetChanged();
     }
 }
