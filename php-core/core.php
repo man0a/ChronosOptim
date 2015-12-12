@@ -18,6 +18,8 @@ function main(){
 
 	$buffer=explode("||",$input);
 	array_pop($buffer);
+	setGlobals();
+	// echo "".time();
 	foreach($buffer as $str){
 		$str=str_replace("|","&",$str);
 		// echo $str;
@@ -57,13 +59,7 @@ function handle($post){
 		case "deleteE":delEvent($post);break;
 		case "deleteT":delTeam($post);break;
 		case "deleteM":delMember($post);break;
-		// case "algo":
-		// $weights=optim("GfCEpAfie6");
-		// foreach($weights as $weight){
-		// 	$str=$weight->toStr();
-		// 	echo $str."<br>";
-		// }
-			// optim();break;
+		case "optim":optim($post);break;
 		default:
 			echo "Malformed POST request: invalid 'x' value.";
 			return;
@@ -91,8 +87,7 @@ function addTeam($post) {
 	$team=ParseObject::create("Team");
 	$team->set("name",trim($post["name"]));
 	$team->set("description",trim($post["description"]));
-	$team->setArray("members",array());
-	$team->set("userId",trim($post["client"]));
+	$team->setArray("members",array(trim($post["client"])));
 	$team->save();
 	$oldId=trim($post["id"]);
 	$objId=$team->getObjectId();
@@ -153,5 +148,15 @@ function delMember($post) {
   	}
   	$y->remove("members",$uname);
   	$y->save();
+}
+
+function setGlobals(){
+	$t=time();
+	date_default_timezone_set("America/New_York");// EST
+	$h=idate("H",$t);
+	$m=idate("i",$t);
+	$s=idate("s",$t);
+	$GLOBALS["OFFSET"]=$t-($h*60+$m)*60-$s;
+	$GLOBALS["BASE_LINE"]=$t;
 }
 ?>

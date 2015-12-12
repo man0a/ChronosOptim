@@ -139,13 +139,13 @@ public class AddEventActivity extends AppCompatActivity {
 
         public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
             String textHour, textMinute;
-            if(selectedMinute <= 9) {
+            if(selectedHour <= 9) {
                 textHour = "0" + selectedHour;
             } else {
                 textHour = selectedHour +"";
             }
             if(selectedMinute <= 9) {
-                textMinute = "0" + selectedMinute ;
+                textMinute = "0" + selectedMinute;
             } else {
                 textMinute = selectedMinute + "";
             }

@@ -8,6 +8,20 @@ class Block{
 		$this->start=$start;
 		$this->end=$end;
 	}
+
+	function toStr($baseline){
+		$s=$this->toDate($this->start,$baseline);
+		$e=$this->toDate($this->end,$baseline);
+		$day=substr($s,0,10);
+		$start=substr($s,11);
+		$end=substr($e,11);
+		return "date=$day,start=$start,end=$end";
+	}
+
+	function toDate($x,$baseline){
+
+		return date("m-d-Y H:i",60*$x+$GLOBALS["OFFSET"]);
+	}
 }
 
 class Weight extends Block{
@@ -18,18 +32,8 @@ class Weight extends Block{
 		$this->weight=$w;
 	}
 
-	function toStr(){
-		$s=$this->str($this->start);
-		$e=$this->str($this->end);
-		return "{$s} to {$e} ({$this->weight})<br>";
-	}
-
-	function str($timeInt){
-		$min="".($timeInt%60);
-		if(strlen($min)==1){
-			$min="0".$min;
-		}
-		return floor($timeInt/60).":".$min;
+	function toStr($baseline){
+		return parent::toStr($baseline).",weight:{$this->weight}";
 	}
 }
 

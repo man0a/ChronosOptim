@@ -4,17 +4,34 @@ use Parse\ParseObject;
 use Parse\ParseQuery;
 use Parse\ParseUser;
 
-function optim($teamId){
+function optim($post){
+	if(!isset($post["id"])){
+		echo "Malformed POST request: no 'id' key.";
+		return;
+	}
+	$teamId=trim($post["id"]);
+
 	// get team members' schedules off Parse
-	$eventObjs=getEventsByTeam($teamId);
-	// get sorted start and end times 
-	list($start,$end)=prepare($eventObjs);
-	// merge times
-	$merged=merge($start,$end);
+	$events=getEventsByTeam($teamId);
+	// merge events
+	$merged=blockMerge($events);
 	// count busyness and create weights
 	$blocks=getWeights($merged);
 
-	return $blocks;
+	for($i=0;$i<count($blocks);$i++){
+		$x=$blocks[$i]->toStr($GLOBALS["BASE_LINE"]);
+		echo $x."<br>";
+	}
+}
+
+function blockMerge($blocks){
+	$start=array();
+	$end=array();
+	foreach($blocks as $block){
+		$start[]=$block->start;
+		$end[]=$block->end;
+	}
+	return merge($start,$end);
 }
 
 function merge($start,$end){
@@ -49,11 +66,13 @@ function prepare($eventObjs){
 	$start=array();
 	$end=array();
 	foreach($eventObjs as $event){
-		// for now, ignore date
-		$start[]=parseInt($event->get("startTime"));
-		$end[]=parseInt($event->get("endTime"));
+		// get start and end times, as integers (minutes)
+		$evDateStr=$event->get("date");
+		$evDate=date_timestamp_get(date_create_from_format("m-d-Y",$evDateStr));
+	    $numMins=floor(($evDate-$GLOBALS["BASE_LINE"])/60);
+		$start[]=$numMins+parseInt($event->get("startTime"));
+		$end[]=$numMins+parseInt($event->get("endTime"));
 	}
-
 	sort($start);
 	sort($end);
 	return array($start,$end);
@@ -72,14 +91,48 @@ function getEventsByTeam($teamId){
 	$query=new ParseQuery("Team");
 	$team=$query->get($teamId);
 
-	// get Users from Team
+	// get User from Team
 	$members=$team->get("members");
-	// get Events from Users
-
+	// get Events
 	$query=new ParseQuery("Event");
-	$query->containedIn("userId",$members);
-	$events=$query->find();
+	$events=array();
+
+	// for each User on Team
+	foreach($members as $member){
+		$query->equalTo("userId",$member);
+		$eventObjs=$query->find();// get events
+		list($start,$end)=prepare($eventObjs);// strip start and end
+		$merged=merge($start,$end);// merge
+		$blocks=squash($merged);// squash
+		$events=array_merge($events,$blocks);// add to list
+	}
+
 	return $events;
+}
+
+function squash($merged){
+	$busy=0;
+	$blocks=array();
+	$block_start=0;
+
+	for($i=0;$i<count($merged);$i=$times){
+		$current_time=abs($merged[$i]);
+
+		for($times=$i;$times<count($merged) && $current_time==abs($merged[$times]);$times++){
+			if($merged[$times]>0){// start
+				if($busy==0){
+					$block_start=$current_time;
+				}
+				$busy++;
+			}else{// end
+				$busy--;
+				if($busy==0){
+					$blocks[]=new Block($block_start,$current_time);
+				}
+			}
+		}
+	}
+	return $blocks;
 }
 
 function getWeights($merged){
@@ -88,7 +141,7 @@ function getWeights($merged){
 	$blocks=array();
 	$prev_time=-1;
 
-	for($i=0;$i<count($merged);){
+	for($i=0;$i<count($merged);$i=$times){
 		$current_time=abs($merged[$i]);
 
 		for($times=$i;$times<count($merged) && $current_time==abs($merged[$times]);$times++){
@@ -103,12 +156,21 @@ function getWeights($merged){
 			$prev_time=$current_time;
 			$prev_busy=$busy;
 		}
-		// advance iterator
-		$i=$times;
 	}
-	$blocks[]=new Weight($prev_time,0,$prev_busy);
+	// delete first block
+	array_shift($blocks);
+	// sort by weight
+	usort($blocks,"cmp");
 	return $blocks;
 }
 
+function cmp($a,$b){
+	$x=$a->weight;
+	$y=$b->weight;
+	if($x==$y){
+		return 0;
+	}
+	return ($x<$y)?-1:1;
+}
 
 ?>

@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener, ClientDevice {
+public class MainActivity extends ClientDevice implements RecyclerView.OnItemTouchListener {
 
     private SyncBuffer syncBuffer;
     private DbHelper dbHelper;
@@ -174,15 +174,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
 
     }
 
-    public void setLocalId(String userId){
-        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putString("userId", userId);
-        editor.commit();
-    }
-    public String getLocalId(){
-        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(this);
-        return settings.getString("userId","!");
-    }
     public void coverActions(LinkedList<String> actions){
         SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
         Set<String> set=new HashSet<>();
@@ -211,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerView.OnIt
         for(String action:set){
             int underScoreIndex=action.lastIndexOf("_");
             int index=Integer.parseInt(action.substring(underScoreIndex+1));
-            actions.set(index,action.substring(0,underScoreIndex));
+            actions.set(index, action.substring(0, underScoreIndex));
         }
         return actions;
     }
