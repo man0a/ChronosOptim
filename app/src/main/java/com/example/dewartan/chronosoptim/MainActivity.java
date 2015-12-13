@@ -238,10 +238,8 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
             startActivityForResult(new Intent(this, AddTeamActivity.class), add_team_code);
             return true;
         }
-        if(id == R.id.resetDatabase) {
-            evAdapter.reset();
-            evAdapter.refresh();
-            teamAdapter.refresh();
+        if(id == R.id.changeAlias) {
+            startActivity(new Intent(this, ChangeNameActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

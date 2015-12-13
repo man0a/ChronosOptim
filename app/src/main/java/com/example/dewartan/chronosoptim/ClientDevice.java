@@ -12,12 +12,23 @@ public abstract class ClientDevice extends AppCompatActivity{
     abstract LinkedList<String> recoverActions();
 
     public void setLocalId(String userId){
-        SharedPreferences.Editor editor= PreferenceManager.getDefaultSharedPreferences(this).edit();
+        SharedPreferences.Editor editor=prefs().edit();
         editor.putString("userId", userId);
+        editor.putString("alias", "user"+userId);
+        editor.commit();
+    }
+    public void setLocalAlias(String alias){
+        SharedPreferences.Editor editor=prefs().edit();
+        editor.putString("alias", alias);
         editor.commit();
     }
     public String getLocalId(){
-        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(this);
-        return settings.getString("userId","!");
+        return prefs().getString("userId", "!");
+    }
+    public String getLocalAlias(){
+        return prefs().getString("alias", "!!");
+    }
+    private SharedPreferences prefs(){
+        return PreferenceManager.getDefaultSharedPreferences(this);
     }
 }

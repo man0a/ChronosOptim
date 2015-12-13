@@ -7,7 +7,7 @@
     <string name="title">Title of Event</string>
     <string name="create_event">Create Event</string>
     <string name="create_team">Create Team</string>
-    <string name="reset_db">Reset Database</string>
+    <string name="change_alias">Change Username</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="subtitle">Subtitle</string>
     <string name="time">Time</string>
@@ -35,4 +35,5 @@
     <string name="add_user_button">Add</string>
     <string name="delete_user_button">X</string>
 
+    <string name="new_name">New username</string>
 </resources>

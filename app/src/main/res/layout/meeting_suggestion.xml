@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:textSize="24dp"
-        android:textColor="@color/suggest_time"
+        android:textColor="@color/nice_blue"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         />

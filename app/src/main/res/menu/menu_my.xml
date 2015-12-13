@@ -13,8 +13,8 @@
         android:title="@string/create_team"
         app:showAsAction="never" />
     <item
-        android:id="@+id/resetDatabase"
+        android:id="@+id/changeAlias"
         android:orderInCategory="100"
-        android:title="@string/reset_db"
+        android:title="@string/change_alias"
         app:showAsAction="never" />
 </menu>
