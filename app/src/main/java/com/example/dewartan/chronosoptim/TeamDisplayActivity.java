@@ -1,7 +1,9 @@
 package com.example.dewartan.chronosoptim;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -26,6 +28,7 @@ public class TeamDisplayActivity extends ClientDevice{
 
         //Get the Object
         team = this.getIntent().getParcelableExtra("viewTeam");
+        Log.w("here",team.getId());
 
         name = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
@@ -78,6 +81,23 @@ public class TeamDisplayActivity extends ClientDevice{
         View listItem=(View)view.getParent();
         String username=(String)listItem.getTag();
         userAdapter.remove(username);
+    }
+
+    public void optim(View view){
+        Intent intent=new Intent(this,OptimResultsActivity.class);
+        intent.putExtra("team",team);
+        startActivityForResult(intent,1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        String selected=data.getStringExtra("meeting");
+        Log.w("made it", selected);
+        // parse -> create event
+        // commit locally and to cloud
+
     }
 }
 

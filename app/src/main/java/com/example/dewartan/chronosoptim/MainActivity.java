@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +24,7 @@ import java.util.Set;
 public class MainActivity extends ClientDevice implements RecyclerView.OnItemTouchListener {
 
     private SyncBuffer syncBuffer;
+    private Notifier notifier;
     private DbHelper dbHelper;
     private EventListAdapter evAdapter;
     private TeamListAdapter teamAdapter;
@@ -37,6 +37,9 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
+
+        // Notifier
+        notifier=new Notifier(this);
 
         // SyncBuffer
         syncBuffer=new SyncBuffer(this);
@@ -148,9 +151,10 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         syncBuffer.sync();
+
     }
 
     @Override

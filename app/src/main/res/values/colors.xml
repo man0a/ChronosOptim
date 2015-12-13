@@ -12,4 +12,8 @@
     <color name="ColorPrimary">#3F51B5</color>
     <color name="ColorPrimaryDark">#122654</color>
     <color name="ColorAccent">#FFAB40</color>
+
+    <color name="suggest_time">#1199FF</color>
+    <color name="suggest_date">#0088FF</color>
+    <color name="available">#FF5050</color>
 </resources>

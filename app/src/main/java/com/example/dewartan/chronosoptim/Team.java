@@ -46,6 +46,9 @@ public class Team implements Parcelable{
         }
         return memberList;
     }
+    public int getSize(){
+        return members.size()+1;
+    }
     public void setId(String id){
         this.id=id;
     }

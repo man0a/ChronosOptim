@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_below="@id/description"
+        android:onClick="optim"
         android:text="@string/get_times_button"
         />
 
