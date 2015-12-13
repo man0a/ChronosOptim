@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ public class TeamDisplayActivity extends ClientDevice{
 
         //Get the Object
         team = this.getIntent().getParcelableExtra("viewTeam");
-        Log.w("here",team.getId());
+        Log.w("here", team.getId());
 
         name = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
@@ -52,9 +54,26 @@ public class TeamDisplayActivity extends ClientDevice{
             description.setText(team.getDescription());
         }
 
+        syncBuffer.send("&x=pullU");
+
     }
 
-    public void uponSync(String response){}
+    public void uponSync(String response){
+        Log.w("here","tdisp "+response);
+        if(!response.startsWith("=users:")){
+            return;
+        }
+
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,R.layout.user_list_item);
+        String[] names=response.substring(7).split(",");
+        for(String name:names){
+            adapter.add(name);
+            Log.w("here","adding "+name);
+        }
+
+        AutoCompleteTextView tw=(AutoCompleteTextView)findViewById(R.id.type_user);
+        tw.setAdapter(adapter);
+    }
     public void coverActions(LinkedList<String> actions){}
     public LinkedList<String> recoverActions(){return new LinkedList<>();}
 

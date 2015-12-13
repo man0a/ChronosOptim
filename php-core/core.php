@@ -19,7 +19,6 @@ function main(){
 	$buffer=explode("||",$input);
 	array_pop($buffer);
 	setGlobals();
-	// echo "".time();
 	foreach($buffer as $str){
 		$str=str_replace("|","&",$str);
 		// echo $str;
@@ -37,13 +36,7 @@ function handle($post){
 	}
 	$client=trim($post["client"]);
 	if(strcmp($client,"!")==0){
-		// client not yet registered, respond 
-		$user=ParseObject::create("Users");		
-		$user->save();
-		$objId=$user->getObjectId();
-		$user->set("uname",$objId);
-		$user->save();
-		echo "+user:".$objId;
+		addUser($objId);
 		return;
 	}
 	if(!isset($post["x"])){
@@ -59,6 +52,8 @@ function handle($post){
 		case "deleteE":delEvent($post);break;
 		case "deleteT":delTeam($post);break;
 		case "deleteM":delMember($post);break;
+		case "changeU":changeUser($post);break;
+		case "pullU":pullUsers();break;
 		case "optim":optim($post);break;
 		default:
 			echo "Malformed POST request: invalid 'x' value.";
@@ -105,7 +100,15 @@ function addMember($post) {
 	$team->save();
 	echo ":)";
 }
-
+function addUser($objId){
+	// client not yet registered, respond 
+	$user=ParseObject::create("Users");		
+	$user->save();
+	$objId=$user->getObjectId();
+	$user->set("uname","user ".$objId);
+	$user->save();
+	echo "+user:".$objId;
+}
 
 
 
@@ -142,12 +145,49 @@ function delMember($post) {
 	$query=new ParseQuery("Team");
 	try {
   		$y=$query->get($objId);
-  		echo ":)";
   	} catch (Exception $ex) {
   		echo "Failed query.";
+  		return;
   	}
   	$y->remove("members",$uname);
   	$y->save();
+	echo ":)";
+}
+
+
+// CHANGE METHODS
+function changeUser($post){
+	$objId=trim($post["client"]);
+	$newName=trim($post["name"]);
+	$query=new ParseQuery("Users");
+	try {
+  		$y=$query->get($objId);
+  	} catch (Exception $ex) {
+  		echo "Failed query.";
+  		return;
+  	}
+  	$y->set("uname",$newName);
+  	$y->save();
+  	echo ":)".$newName;
+}
+
+function pullUsers(){
+	$query=new ParseQuery("Users");
+	try{
+		$y=$query->find();
+	}catch(Exception $ex){
+		echo "Failed query.";
+		return;
+	}
+	if(count($y)==0){
+		echo "=users=empty";
+		return;
+	}
+	$names="=users:".$y[0]->get("uname");
+	for($i=1;$i<count($y);$i++){
+		$names.=",".$y[$i]->get("uname");
+	}
+	echo $names;
 }
 
 function setGlobals(){

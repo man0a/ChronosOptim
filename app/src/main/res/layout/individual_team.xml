@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:orientation="vertical"
+    >
 
     <include
         android:id="@+id/empty_bar"
@@ -11,60 +12,65 @@
 
         ></include>
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@id/empty_bar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginTop="45dp"
-        android:layout_below="@id/title" />
-
-    <Button
-        android:id="@+id/get_times"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_below="@id/description"
-        android:onClick="optim"
-        android:text="@string/get_times_button"
-        />
-
-    <EditText
-        android:id="@+id/type_user"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/add_user"
-        android:layout_below="@id/get_times"
-        android:hint="@string/add_user_hint"
-        />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@id/add_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/get_times"
-        android:text="@string/add_user_button"
-        android:onClick="add"
-        />
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@id/title" />
 
-    <ListView
-        android:id="@+id/user_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/type_user"
-        />
+        <AutoCompleteTextView
+            android:id="@+id/type_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/add_user"
+            android:layout_below="@id/description"
+            android:hint="@string/add_user_hint"
+            />
 
-</RelativeLayout>
+        <Button
+            android:id="@id/add_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/description"
+            android:text="@string/add_user_button"
+            android:onClick="add"
+            />
+
+        <Button
+            android:id="@+id/get_times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_below="@id/type_user"
+            android:onClick="optim"
+            android:text="@string/get_times_button"
+            />
+
+        <ListView
+            android:id="@+id/user_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/get_times"
+            />
+    </RelativeLayout>
+
+</LinearLayout>
