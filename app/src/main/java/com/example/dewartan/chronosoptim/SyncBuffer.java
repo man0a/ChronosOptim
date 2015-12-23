@@ -1,7 +1,5 @@
 package com.example.dewartan.chronosoptim;
 
-import android.util.Log;
-
 import com.parse.ParseInstallation;
 
 import java.util.ArrayList;

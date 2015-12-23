@@ -2,15 +2,11 @@ package com.example.dewartan.chronosoptim;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -29,17 +25,20 @@ public class OptimResultsActivity extends ClientDevice{
 
         SyncBuffer syncBuffer=new SyncBuffer(this);
         ListView list=(ListView) findViewById(R.id.list);
-        adapter=new OptimResultsAdapter(team.getSize());
-        list.setAdapter(adapter);
-        syncBuffer.send("&x=optim&id=" + teamId);
+//        Log.w("oract", team.getMembers());
+        if(team.getSize()>1){
+            adapter = new OptimResultsAdapter(team.getSize());
+            list.setAdapter(adapter);
+            syncBuffer.send("&x=optim&id=" + teamId);
+        }
 //        adapter.set("12/16,9:30,10:30,0;12/17,10:00,11:00,0");
     }
 
 
     public void select(View view) {
-        String selected=(String)((TextView)view).getText();
         Intent backIntent=new Intent();
-        backIntent.putExtra("meeting",selected);
+        backIntent.putExtra("time",(String)((TextView)view.findViewById(R.id.time)).getText());
+        backIntent.putExtra("date",(String)((TextView)view.findViewById(R.id.date)).getText());
         setResult(RESULT_OK,backIntent);
         finish();
     }

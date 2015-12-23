@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -39,7 +38,7 @@ public class OptimResultsAdapter extends BaseAdapter {
         String suggestion=getItem(index);
 
         // list item view formatting
-        Log.w("here",suggestion);
+//        Log.w("here",suggestion);
         String[] parts=suggestion.split(",");
         setTextOn(parts[1]+" - "+parts[2],R.id.time,view);
         setTextOn(parts[0],R.id.date,view);
@@ -56,7 +55,7 @@ public class OptimResultsAdapter extends BaseAdapter {
     }
 
     public void set(String optim){
-        String[] suggestions=optim.split(";");
+        String[] suggestions=optim.substring(7).split(";");
         for(String suggestion:suggestions){
             optimList.add(suggestion);
         }

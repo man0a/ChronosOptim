@@ -3,9 +3,7 @@ package com.example.dewartan.chronosoptim;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.parse.ParseInstallation;
 
 import java.util.LinkedList;
 
@@ -17,7 +15,7 @@ public abstract class ClientDevice extends AppCompatActivity{
     public void setLocalId(String userId){
         SharedPreferences.Editor editor=prefs().edit();
         editor.putString("userId", userId);
-        editor.putString("alias", "user"+userId);
+        editor.putString("alias", "user "+userId);
         editor.commit();
     }
     public void setLocalAlias(String alias){

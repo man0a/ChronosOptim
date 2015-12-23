@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -59,7 +58,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
     public void insert(SQLiteDatabase db,Event event){
         ContentValues cv=event.content();
-        boolean fixId=(((String)cv.get("id")).length()==0);
+        boolean fixId=(((String)cv.get("id")).isEmpty());
         // if has ID insert and exit
         db.insert(EVENT_TABLE_NAME, null, cv);
         if(fixId){
@@ -198,7 +197,6 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor res=db.rawQuery("select * from team where id='"+teamId+"'",null);
         if(res.moveToFirst()){
             String userList=res.getString(3);
-            Log.w("here","pull users "+userList);
             if(userList.isEmpty()){
                 return new String[]{};
             }else{
@@ -207,6 +205,11 @@ public class DbHelper extends SQLiteOpenHelper {
         }else{
             return null;
         }
+    }
+
+    public void broadcast(Event event,Team team){
+        insert(event);
+        syncBuffer.send("&x=broadcast&"+event.postForm()+"&teamId="+team.getId());
     }
 
     public Cursor query(String tableName){

@@ -1,8 +1,5 @@
 package com.example.dewartan.chronosoptim;
 
-import android.util.Log;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,7 +64,6 @@ public final class EventDate {
     }
 
     public static boolean matches(Calendar calendar,Event event){
-        Log.d("matches", format(calendar));
         return event.getDate().equals(format(calendar));
     }
 

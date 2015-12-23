@@ -3,6 +3,8 @@ require_once('./parse-sdk/ignite.php');
 use Parse\ParseObject;
 use Parse\ParseQuery;
 use Parse\ParseUser;
+use Parse\ParseInstallation;
+use Parse\ParsePush;
 
 require_once("./classes.php");
 require_once("./optim.php");
@@ -56,6 +58,7 @@ function handle($post){
 		case "pullU":pullUsers();break;
 		case "optim":optim($post);break;
 		case "installU":installUser($post);break;
+		case "broadcast":broadcast($post);break;
 		default:
 			echo "Malformed POST request: invalid 'x' value.";
 			return;
@@ -201,6 +204,79 @@ function installUser($post){
   	$y->save();
   	echo ":)";
 }
+
+// BROADCAST METHOD
+function broadcast($post){
+	$client=trim($post["client"]);
+	$teamId=trim($post["teamId"]);
+	// $fields=array("title","description","date","startTime","endTime","location","subtitle");
+	// $event=ParseObject::create("Event");
+	// foreach($fields as $field){
+		// $event->set($field,trim($post[$field]));
+	// }
+
+	// get team from id
+	$query=new ParseQuery("Team");
+	try {
+  		$team=$query->get($teamId);
+  	} catch (Exception $ex) {
+  		echo "Failed query.";
+  		return;
+  	}	
+
+  	// get users from team
+  	$userIds=$team->get("members");
+	$query=new ParseQuery("Users");
+	$query->containedIn("objectId",$userIds);
+	$query->notEqualTo("objectId",$client);
+	// $query->equalTo("objectId",$client);
+	try {
+  		$query->containedIn($userIds);
+  		$users=$query->find();
+  	} catch (Exception $ex) {
+  		echo "Failed query.";
+  		return;
+  	}
+
+	// get installations from users
+  	$installs=[];
+  	foreach($users as $user){
+  		$installs[]=$user->get("installation");
+  	}
+  	
+	$pushQuery=ParseInstallation::query();
+	$pushQuery->containedIn("objectId",$installs);
+	$push=array(
+		"alert"=>"Oh hi"
+	);
+
+	ParsePush::send(array(
+		"where"=>$pushQuery,
+		"data"=>$push
+	));
+
+
+	// notify self
+	$query=new ParseQuery("Users");
+	try {
+  		$user=$query->get($client);
+  	} catch (Exception $ex) {
+  		echo "Failed query.";
+  		return;
+  	}
+	$pushQuery=ParseInstallation::query();
+	$pushQuery->equalTo("objectId",$user->get("installation"));
+	$push=array(
+		"alert"=>"Your ".count($users)." teammates were invited."
+	);
+
+	ParsePush::send(array(
+		"where"=>$pushQuery,
+		"data"=>$push
+	));
+}
+
+
 
 function pullUsers(){
 	$query=new ParseQuery("Users");

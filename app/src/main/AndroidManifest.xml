@@ -36,7 +36,7 @@
             android:value="@string/parse_client_key" />
         <meta-data
             android:name="com.parse.push.notification_icon"
-            android:resource="@drawable/notif_blue" />
+            android:resource="@drawable/ic_blur_on_black_24dp" />
 
         <activity
             android:name=".MainActivity"
@@ -87,7 +87,7 @@
 
 
         <service android:name="com.parse.PushService" />
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+        <receiver android:name="com.example.dewartan.chronosoptim.PushReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />

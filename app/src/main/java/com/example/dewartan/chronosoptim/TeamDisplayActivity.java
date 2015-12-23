@@ -3,7 +3,6 @@ package com.example.dewartan.chronosoptim;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,6 +22,7 @@ public class TeamDisplayActivity extends ClientDevice{
     private TextView name, description, toolbarTitle;
     private Team team;
     private UserListAdapter userAdapter;
+    private DbHelper dbHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +37,7 @@ public class TeamDisplayActivity extends ClientDevice{
         ListView userList=(ListView) findViewById(R.id.user_list);
 
         SyncBuffer syncBuffer=new SyncBuffer(this);
-        DbHelper dbHelper=new DbHelper(this,syncBuffer);
+        dbHelper=new DbHelper(this,syncBuffer);
         userAdapter=new UserListAdapter(this,team,dbHelper);
         userList.setAdapter(userAdapter);
 
@@ -69,7 +69,6 @@ public class TeamDisplayActivity extends ClientDevice{
         String[] names=response.substring(7).split(",");
         for(String name:names){
             adapter.add(name);
-//            Log.w("here","adding "+name);
         }
 
         AutoCompleteTextView tw=(AutoCompleteTextView)findViewById(R.id.type_user);
@@ -113,11 +112,11 @@ public class TeamDisplayActivity extends ClientDevice{
         if (resultCode != RESULT_OK) {
             return;
         }
-        String selected=data.getStringExtra("meeting");
-        Log.w("made it", selected);
-        // parse -> create event
-        // commit locally and to cloud
-
+        String time=data.getStringExtra("time");
+        String times[]=time.split(" - ");
+        String date=data.getStringExtra("date");
+        Event event=new Event(team.getName()+" meeting","",date,times[0],times[1],"",team.getMembers());
+        dbHelper.broadcast(event,team);
     }
 }
 

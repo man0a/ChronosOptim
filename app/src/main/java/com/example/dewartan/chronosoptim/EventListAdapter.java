@@ -4,7 +4,6 @@ import java.util.*;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,11 +104,9 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         for(Event event:dbEvents){
             if(event.getId().equals(rotten)){
                 event.setId(fresh);
-                Log.w("here","setid found");
                 return;
             }
         }
-        Log.w("here","setid not found");
     }
 
     @Override
