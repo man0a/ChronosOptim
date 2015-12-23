@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import com.parse.ParseAnalytics;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -37,6 +39,8 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
+
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
         // Notifier
         notifier=new Notifier(this);
