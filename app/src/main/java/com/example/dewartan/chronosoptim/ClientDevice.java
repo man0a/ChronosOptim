@@ -3,6 +3,9 @@ package com.example.dewartan.chronosoptim;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.parse.ParseInstallation;
 
 import java.util.LinkedList;
 

@@ -31,7 +31,7 @@
 
 
     <string name="get_times_button">Find a Meeting Time!</string>
-    <string name="add_user_hint">Search...</string>
+    <string name="add_user_hint">Search&#8230;</string>
     <string name="add_user_button">Add</string>
     <string name="delete_user_button">X</string>
 

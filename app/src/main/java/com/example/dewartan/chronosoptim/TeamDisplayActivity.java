@@ -30,7 +30,7 @@ public class TeamDisplayActivity extends ClientDevice{
 
         //Get the Object
         team = this.getIntent().getParcelableExtra("viewTeam");
-        Log.w("here", team.getId());
+//        Log.w("here", team.getId());
 
         name = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
@@ -59,7 +59,8 @@ public class TeamDisplayActivity extends ClientDevice{
     }
 
     public void uponSync(String response){
-        Log.w("here","tdisp "+response);
+//        Log.w("here", "tdisp: " + response);
+
         if(!response.startsWith("=users:")){
             return;
         }
@@ -68,7 +69,7 @@ public class TeamDisplayActivity extends ClientDevice{
         String[] names=response.substring(7).split(",");
         for(String name:names){
             adapter.add(name);
-            Log.w("here","adding "+name);
+//            Log.w("here","adding "+name);
         }
 
         AutoCompleteTextView tw=(AutoCompleteTextView)findViewById(R.id.type_user);

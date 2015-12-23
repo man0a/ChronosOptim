@@ -16,12 +16,21 @@ function optim($post){
 	// merge events
 	$merged=blockMerge($events);
 	// count busyness and create weights
-	$blocks=getWeights($merged);
+	$weights=getWeights($merged);
 
-	for($i=0;$i<count($blocks);$i++){
-		$x=$blocks[$i]->toStr($GLOBALS["BASE_LINE"]);
-		echo $x."<br>";
+	$blocks=constrain($weights);
+	// echo count($blocks);
+
+	$output="+optim:";
+	$c=0;
+	foreach($blocks as $block){
+		// echo $block->toStr()."<br>";
+		$output.=$block->toStr().";";
+		if(++$c==25){
+			break;
+		}
 	}
+	echo $output;
 }
 
 function blockMerge($blocks){
@@ -73,24 +82,35 @@ function prepare($eventObjs){
 		$start[]=$numMins+parseInt($event->get("startTime"));
 		$end[]=$numMins+parseInt($event->get("endTime"));
 	}
+
 	sort($start);
 	sort($end);
 	return array($start,$end);
 }
 
 function parseInt($str){
-	// "11:00"
+	// "11:00" -> 660
 	$parts=explode(":",$str);
 	return $parts[0]*60+$parts[1];
 }
-
+function parseStr($int){
+	// 660 -> "11:00"
+	$h=$int/60;
+	if($h<10){
+		$h="0".$h;
+	}
+	$m=$int%60;
+	if($m<10){
+		$m="0".$m;
+	}
+	return $h.":".$m;
+}
 
 
 function getEventsByTeam($teamId){
 	// get Team from Id
 	$query=new ParseQuery("Team");
 	$team=$query->get($teamId);
-
 	// get User from Team
 	$members=$team->get("members");
 	// get Events
@@ -139,7 +159,7 @@ function getWeights($merged){
 	$busy=0;
 	$prev_busy=0;
 	$blocks=array();
-	$prev_time=-1;
+	$prev_time=0;
 
 	for($i=0;$i<count($merged);$i=$times){
 		$current_time=abs($merged[$i]);
@@ -171,6 +191,28 @@ function cmp($a,$b){
 		return 0;
 	}
 	return ($x<$y)?-1:1;
+}
+
+function constrain($weights){
+	$blocks=[];
+
+	foreach($weights as $weight){
+		$s=parseInt($weight->start());
+		$e=parseInt($weight->end());
+
+		if($s<540){// before 9am
+			$weight->start="09:00";
+			$s=540;
+		}
+		if($e>1020){// after 5pm
+			$weight->end="17:00";
+			$e=1020;
+		}
+		if($e-$s>=60){// at least one hour
+			$blocks[]=$weight;
+		}
+	}
+	return $blocks;
 }
 
 ?>

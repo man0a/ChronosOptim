@@ -24,8 +24,6 @@ public class OptimResultsActivity extends ClientDevice{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.optim_results);
 
-
-
         Team team=getIntent().getParcelableExtra("team");
         String teamId=team.getId();
 
@@ -33,8 +31,8 @@ public class OptimResultsActivity extends ClientDevice{
         ListView list=(ListView) findViewById(R.id.list);
         adapter=new OptimResultsAdapter(team.getSize());
         list.setAdapter(adapter);
-//        syncBuffer.send("&x=optim&id=" + teamId);
-        adapter.set("12/16,9:30,10:30,0;12/17,10:00,11:00,0");
+        syncBuffer.send("&x=optim&id=" + teamId);
+//        adapter.set("12/16,9:30,10:30,0;12/17,10:00,11:00,0");
     }
 
 

@@ -25,7 +25,7 @@
     <application
         android:name=".StarterApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_blur_on_black_24dp"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <meta-data
@@ -34,6 +34,9 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/parse_client_key" />
+        <meta-data
+            android:name="com.parse.push.notification_icon"
+            android:resource="@drawable/notif_blue" />
 
         <activity
             android:name=".MainActivity"
@@ -44,6 +47,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EventDisplayActivity">
+            <intent-filter>
+                <action android:name="com.example.dewartan.chronosoptim.EventDisplayActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".TeamDisplayActivity">
+            <intent-filter>
+                <action android:name="com.example.dewartan.chronosoptim.TeamDisplayActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AddEventActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="com.example.dewartan.chronosoptim.AddEventActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AddTeamActivity">
+            <intent-filter>
+                <action android:name="com.example.dewartan.chronosoptim.AddTeamActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".OptimResultsActivity">
+            <intent-filter>
+                <action android:name="com.example.dewartan.chronosoptim.OptimResultsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ChangeNameActivity">
+            <intent-filter>
+                <action android:name="com.example.dewartan.chronosoptim.ChangeNameActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParsePushBroadcastReceiver"
             android:exported="false">

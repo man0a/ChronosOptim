@@ -1,5 +1,9 @@
 package com.example.dewartan.chronosoptim;
 
+import android.util.Log;
+
+import com.parse.ParseInstallation;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -44,7 +48,11 @@ public class SyncBuffer {
             if(response.startsWith("+user:")){
                 device.setLocalId(response.substring(6));
                 identifier="client="+response.substring(6);
+
+                String installId=ParseInstallation.getCurrentInstallation().getObjectId();
+                send("&x=installU&id="+installId);
             }
+
             device.uponSync(response);
 
         }

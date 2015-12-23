@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,7 +37,6 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
 
@@ -169,6 +169,7 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
 
     public void uponSync(String response){
         // callback for SyncBuffer
+//        Log.w("here", "resp: " + response);
         if(response.startsWith("+user:") || response.equals(":)")){
             return;
         }

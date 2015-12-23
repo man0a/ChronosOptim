@@ -36,7 +36,7 @@ function handle($post){
 	}
 	$client=trim($post["client"]);
 	if(strcmp($client,"!")==0){
-		addUser($objId);
+		addUser();
 		return;
 	}
 	if(!isset($post["x"])){
@@ -55,6 +55,7 @@ function handle($post){
 		case "changeU":changeUser($post);break;
 		case "pullU":pullUsers();break;
 		case "optim":optim($post);break;
+		case "installU":installUser($post);break;
 		default:
 			echo "Malformed POST request: invalid 'x' value.";
 			return;
@@ -89,6 +90,7 @@ function addTeam($post) {
 	echo "+team:".$oldId.",".$objId;
 }
 function addMember($post) {
+	// get team
 	$query=new ParseQuery("Team");
 	try{
 		$team=$query->get(trim($post["id"]));
@@ -96,16 +98,29 @@ function addMember($post) {
 		echo "Failed query.";
 		return;
 	}
-	$team->add("members",array(trim($post["name"])));
+
+	// get id of user
+	$alias=trim($post["name"]);
+	$query=new ParseQuery("Users");
+	try{
+		$query->equalTo("uname",$alias);
+		$users=$query->find();
+	}catch(Exception $ex){
+		echo "Failed query.";
+		return;
+	}
+	$id=$users[0]->getObjectId();
+	$team->add("members",array($id));
 	$team->save();
 	echo ":)";
 }
-function addUser($objId){
+function addUser(){
 	// client not yet registered, respond 
-	$user=ParseObject::create("Users");		
+	$user=ParseObject::create("Users");
 	$user->save();
 	$objId=$user->getObjectId();
 	$user->set("uname","user ".$objId);
+	$user->set("installation","!");// omit "!"
 	$user->save();
 	echo "+user:".$objId;
 }
@@ -169,6 +184,22 @@ function changeUser($post){
   	$y->set("uname",$newName);
   	$y->save();
   	echo ":)".$newName;
+}
+
+function installUser($post){
+	$objId=trim($post["client"]);
+	$installId=trim($post["id"]);
+
+	$query=new ParseQuery("Users");
+	try {
+  		$y=$query->get($objId);
+  	} catch (Exception $ex) {
+  		echo "Failed query.";
+  		return;
+  	}
+  	$y->set("installation",$installId);
+  	$y->save();
+  	echo ":)";
 }
 
 function pullUsers(){
