@@ -107,7 +107,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
                 android:id="@+id/starttimepicker"
                 android:text="@string/start_time"
                 android:onClick="showTimePickerDialog" />
@@ -134,7 +133,6 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
                     android:id="@+id/endtimepicker"
                     android:text="@string/end_time"
                     android:onClick="showTimePickerDialog" />
@@ -162,7 +160,6 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
                     android:id="@+id/datepicker"
                     android:text="@string/date"
                     android:onClick="showDatePickerDialog" />
@@ -195,7 +192,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
         android:layout_weight="1.0"
         android:id="@+id/save"
         android:text="@string/save" />
@@ -203,7 +199,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
             android:id="@+id/cancel"
             android:layout_weight="1.0"
             android:text="@string/cancel"/>
