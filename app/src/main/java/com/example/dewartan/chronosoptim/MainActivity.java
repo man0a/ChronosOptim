@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -66,7 +67,6 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
         dbHelper=new DbHelper(this,syncBuffer);
         evAdapter = new EventListAdapter(dbHelper);
         teamAdapter = new TeamListAdapter(dbHelper);
-//        resetAppData();
         recyclerView.setAdapter(evAdapter);
         // Swipe-to-delete functionality
         ItemTouchHelper.Callback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -99,7 +99,6 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
                     public void onClick(DialogInterface arg0, int arg1) {
                         if(viewHolder instanceof EventListAdapter.ViewHolder){
                             Object obj=((EventListAdapter.ViewHolder) viewHolder).textView.getTag();
-
                             evAdapter.remove((Event)obj);
                         }else if(viewHolder instanceof TeamListAdapter.ViewHolder){
                             Object obj=((TeamListAdapter.ViewHolder) viewHolder).textView.getTag();
@@ -147,13 +146,27 @@ public class MainActivity extends ClientDevice implements RecyclerView.OnItemTou
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
+
+
+        Object obj=getIntent().getParcelableExtra("event");
+        if(obj!=null){
+            evAdapter.append((Event)obj);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         syncBuffer.sync();
-        evAdapter.refresh();
+        StarterApplication sa=(StarterApplication)getApplication();
+        if(sa.getEvent()!=null){
+            Event event=sa.getEvent();
+            evAdapter.append(event);
+            syncBuffer.send("&x=broadcast&"+event.postForm()+"&teamId="+sa.getTeam().getId());
+            sa.setPair(null,null);
+        }else{
+            evAdapter.refresh();
+        }
         teamAdapter.refresh();
     }
 

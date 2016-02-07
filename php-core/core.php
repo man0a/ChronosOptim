@@ -244,16 +244,27 @@ function broadcast($post){
   		$installs[]=$user->get("installation");
   	}
   	
+	$uname=$user->get("uname");
+	$date=trim($post["date"]);
+	$startTime=trim($post["startTime"]);
+	$endTime=trim($post["endTime"]);
+	$teamName=$team->get("name");
+
+  	// notify teammates
+  	// query, push, send
 	$pushQuery=ParseInstallation::query();
 	$pushQuery->containedIn("objectId",$installs);
 	$push=array(
-		"alert"=>"Oh hi"
+		"title"=>$uname." invited you",
+		// "alert"=>"simple"
+		"alert"=>$date." ".$startTime."-".$endTime." > ".$teamName." meeting"
 	);
 
 	ParsePush::send(array(
 		"where"=>$pushQuery,
 		"data"=>$push
 	));
+
 
 
 	// notify self
@@ -264,11 +275,21 @@ function broadcast($post){
   		echo "Failed query.";
   		return;
   	}
+  	// push, query, send
 	$pushQuery=ParseInstallation::query();
 	$pushQuery->equalTo("objectId",$user->get("installation"));
-	$push=array(
-		"alert"=>"Your ".count($users)." teammates were invited."
-	);
+	$c=count($users);
+	// if($c==1){
+	// 	$push=array(
+	// 		"title"=>"Invitation sent",
+	// 		"alert"=>"Your teammate was invited."
+	// 	);
+	// }else{
+	// 	$push=array(
+	// 		"title"=>"Invitations sent",
+	// 		"alert"=>"Your ".$c." teammates were invited."
+	// 	);
+	// }
 
 	ParsePush::send(array(
 		"where"=>$pushQuery,

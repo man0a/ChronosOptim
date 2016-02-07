@@ -29,8 +29,7 @@ public class TeamDisplayActivity extends ClientDevice{
         setContentView(R.layout.individual_team);
 
         //Get the Object
-        team = this.getIntent().getParcelableExtra("viewTeam");
-//        Log.w("here", team.getId());
+        team = getIntent().getParcelableExtra("viewTeam");
 
         name = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
@@ -116,7 +115,9 @@ public class TeamDisplayActivity extends ClientDevice{
         String times[]=time.split(" - ");
         String date=data.getStringExtra("date");
         Event event=new Event(team.getName()+" meeting","",date,times[0],times[1],"",team.getMembers());
-        dbHelper.broadcast(event,team);
+
+        ((StarterApplication)getApplication()).setPair(event,team);
+//        ((MainActivity)getParent()).pushMeeting(event,team);
     }
 }
 

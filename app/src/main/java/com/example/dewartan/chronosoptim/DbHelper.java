@@ -207,11 +207,6 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void broadcast(Event event,Team team){
-        insert(event);
-        syncBuffer.send("&x=broadcast&"+event.postForm()+"&teamId="+team.getId());
-    }
-
     public Cursor query(String tableName){
         SQLiteDatabase db=getReadableDatabase();
         Cursor res=db.rawQuery("select * from "+tableName, null );
