@@ -1,6 +1,5 @@
 package com.example.dewartan.chronosoptim;
 
-import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 
-public class EventDate {
+public final class EventDate {
     private static final int MAX_DAYS = 90;
     private static final Date maxDay=createMaxDay();
     private static final SimpleDateFormat parser=createFormat();
@@ -22,43 +21,50 @@ public class EventDate {
     }
 
     private static SimpleDateFormat createFormat(){
-        return new SimpleDateFormat("MM-dd-yyyy");
+        return new SimpleDateFormat("MM-dd-yyyy", Locale.US);
     }
 
     public static boolean beforeMax(Event event){
-        Date evDate;
-        try {
-            evDate = parser.parse(event.getDate());
-        }catch(ParseException ex){
-            evDate=null;
-        }
-        return evDate.before(maxDay);
+        return parse(event.getDate()).before(maxDay);
     }
 
     public static boolean beforeMax(Calendar cal){
         return cal.getTime().before(maxDay);
     }
 
+    public static String getDayOfWeek(Event event) {
+        String date=event.getDate();
+        return getDayOfWeek(parse(date)) + ", " + date;
+    }
+    public static String getDayOfWeek(Date d){
+        return new SimpleDateFormat("EEEE", Locale.US).format(d);
+    }
+
     public static String pretty(String s){
         // "MM-dd-yyyy" ->  "dow: M/d"
+        Date date=parse(s);
+        return getDayOfWeek(date) + ": " + new SimpleDateFormat("M/d", Locale.US).format(date);
+    }
+
+    public static Date parse(String s){
         Date date=null;
         try{
             date=parser.parse(s);
         }catch(ParseException ex){
-            //
+            ex.printStackTrace();
         }
-        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(date);
-        s=dayOfWeek + ": " + new SimpleDateFormat("M/d").format(date);
-        return s;
+        return date;
     }
 
-    public static String convert(Calendar c){
+    public static String format(Date d){
+        return parser.format(d);
+    }
+    public static String format(Calendar c){
         return parser.format(c.getTime());
     }
 
     public static boolean matches(Calendar calendar,Event event){
-        Log.d("matches", convert(calendar));
-        return event.getDate().equals(convert(calendar));
+        return event.getDate().equals(format(calendar));
     }
 
     public static boolean contains(ArrayList<String> headers,Event event){

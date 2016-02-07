@@ -1,40 +1,39 @@
 package com.example.dewartan.chronosoptim;
 
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by dewartan on 10/20/15.
  */
 public class Event implements Parcelable {
-    private String location, date, startTime, endTime, description, title, subtitle;
+    private String id, location, date, startTime, endTime, description, title, subtitle;
 
-    public Event(String location, String date, String startTime, String endTime, String description, String title, String subtitle) {
+    public Event(String id, String title, String location, String date, String startTime, String endTime, String description, String subtitle) {
+        this.id=id;
+        this.title = title;
         this.location= location;
         this.date = date;
         this.subtitle = subtitle;
         this.startTime = startTime;
         this.endTime = endTime;
         this.description = description;
-        this.title = title;
+    }
+    public Event(String title, String location, String date, String startTime, String endTime, String description, String subtitle) {
+        this("",title,location,date,startTime,endTime,description,subtitle);
     }
 
+
     protected Event(Parcel in) {
-        this.location = in.readString();
+        this.id = in.readString();
+        this.title = in.readString();
+        this.description = in.readString();
         this.date = in.readString();
         this.startTime = in.readString();
         this.endTime = in.readString();
-        this.description = in.readString();
-        this.title = in.readString();
+        this.location = in.readString();
         this.subtitle = in.readString();
     }
 
@@ -50,53 +49,46 @@ public class Event implements Parcelable {
         }
     };
 
+    public ContentValues content(){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("id",id);
+        contentValues.put("title", title);
+        contentValues.put("description", description);
+        contentValues.put("eventdate", date);
+        contentValues.put("starttime", startTime);
+        contentValues.put("endtime", endTime);
+        contentValues.put("location", location);
+        contentValues.put("subtitle", subtitle);
+        return contentValues;
+    }
+
+    public String getId(){
+        return id;
+    }
     public String getTitle() {
         return title;
     }
-
     public String getDate() {
         return date;
     }
-
-    public String getDateDayOfWeek() {
-        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-        Date temp = null;
-        try {
-            temp = df.parse(date);
-        } catch (ParseException e) {
-
-        }
-        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(temp);
-        return dayOfWeek + ", " + date;
-    }
-
     public String getStartTime() {return startTime;}
-
     public String getEndTime(){return endTime;}
-
     public String getLocation() {
         return location;
     }
-
     public String getDescription() {
         return description;
     }
-
     public String getSubtitle() {
+        return subtitle;
+    }
+    public String getSubtext() {
         return startTime + "  " + subtitle;
     }
 
-    public String subtitle() {return subtitle;}
-
-//    public String toJSON() {
-//        return
-//                "{location:\'" + getLocation() +
-//                "\',title:\'"+ getTitle() +
-//                "\',time:\'" +getTime()+
-//                "\',date:\'"+ getDate()+
-//                "\',description:\'"+ getDescription()+
-//                 "\',subtitle:\'"+ subtitle()"}";
-//    }
+    public void setId(String id) {
+        this.id=id;
+    }
 
     @Override
     public int describeContents() {
@@ -105,13 +97,19 @@ public class Event implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(location);
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(description);
         dest.writeString(date);
         dest.writeString(startTime);
         dest.writeString(endTime);
-        dest.writeString(description);
-        dest.writeString(title);
+        dest.writeString(location);
         dest.writeString(subtitle);
+    }
+
+    public String postForm(){
+        return String.format("id=%s&title=%s&description=%s&date=%s&startTime=%s&endTime=%s&location=%s&subtitle=%s",
+            id,title,description,date,startTime,endTime,location,subtitle);
     }
 }
 

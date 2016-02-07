@@ -1,15 +1,22 @@
 <resources>
     <string name="app_name">Chronos Optim</string>
 
-    <string name="feeds">Feeds</string>
+    <string name="teams">Teams</string>
     <string name="events">Events</string>
 
     <string name="title">Title of Event</string>
-    <string name="create_channel">Create Channel</string>
     <string name="create_event">Create Event</string>
+    <string name="create_team">Create Team</string>
+    <string name="change_alias">Change Username</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="subtitle">Subtitle</string>
     <string name="time">Time</string>
+
+    <string name="doRemove">Remove</string>
+    <string name="doNotRemove">Cancel</string>
+
+    <string name="return_from_results">Cancel</string>
+
 
     <string name="location">Location</string>
     <string name="description">Description</string>
@@ -19,6 +26,18 @@
     <string name="date">Date</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="channel_name">Channel Name</string>
+    <string name="team_name">Team Name</string>
     <string name="title_activity_create_event">createEvent</string>
+
+
+    <string name="get_times_button">Find a Meeting Time!</string>
+    <string name="add_user_hint">Search&#8230;</string>
+    <string name="add_user_button">Add</string>
+    <string name="delete_user_button">X</string>
+
+    <string name="new_name">New username</string>
+
+
+    <string name="parse_app_id">z0r0EqW0wMp66JIyWd6HO1SeoO5FHFg1LDftvSrh</string>
+    <string name="parse_client_key">YoU8xazvVrABzpcSU0zg7w3gxNEUhLlQMdhKjDb3</string>
 </resources>

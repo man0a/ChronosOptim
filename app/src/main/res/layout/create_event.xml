@@ -108,8 +108,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/starttimepicker"
+                android:textColor="@android:color/black"
                 android:text="@string/start_time"
-                android:onClick="showTimePickerDialog" />
+                android:onClick="launchStart" />
 
             <TextView
                 android:id="@+id/input_start_time"
@@ -134,8 +135,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/endtimepicker"
+                    android:textColor="@android:color/black"
                     android:text="@string/end_time"
-                    android:onClick="showTimePickerDialog" />
+                    android:onClick="launchEnd" />
 
                 <TextView
                     android:id="@+id/input_end_time"
@@ -162,7 +164,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/datepicker"
                     android:text="@string/date"
-                    android:onClick="showDatePickerDialog" />
+                    android:textColor="@android:color/black"
+                    android:onClick="launchCal" />
 
                 <TextView
                     android:id="@+id/input_date"
@@ -171,6 +174,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/datepicker"
                     android:layout_toEndOf="@+id/datepicker"
+                    android:onClick="launchCal"
                     android:layout_marginLeft="28dp"
                     android:layout_marginStart="28dp" />
             </RelativeLayout>
@@ -187,20 +191,26 @@
         android:paddingTop="5.0dip"
         android:paddingRight="4.0dip"
         android:paddingBottom="1.0dip"
+
         android:layout_width="fill_parent" android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.0"
-        android:id="@+id/save"
-        android:text="@string/save" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:id="@+id/save"
+            android:onClick="save"
+            android:textColor="@android:color/black"
+
+            android:text="@string/save" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/cancel"
+            android:onClick="cancel"
             android:layout_weight="1.0"
+            android:textColor="@android:color/black"
             android:text="@string/cancel"/>
     </LinearLayout>
 </RelativeLayout>
